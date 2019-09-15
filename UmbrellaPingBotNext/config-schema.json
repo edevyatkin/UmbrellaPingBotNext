@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "properties": {
+    "token": {
+      "type": "string",
+      "pattern": "^[0-9]{9}:[-_a-zA-Z0-9]{0,35}$"
+    },
+    "chat_id": {
+      "type": "string",
+      "pattern": "^-100[0-9]{10}$"
+    },
+    "proxy": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "server",
+        "port",
+        "login",
+        "password"
+      ]
+    },
+    "usernames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "token",
+    "chat_id",
+    "usernames"
+  ]
+}

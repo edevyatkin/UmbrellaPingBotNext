@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConfigJsonSchemaGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "config.json config-schema.json"
+    }
+  }
+}
