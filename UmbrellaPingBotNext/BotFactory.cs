@@ -6,6 +6,8 @@ namespace UmbrellaPingBotNext
 {
     internal class BotFactory
     {
+        private static TelegramBotClient _client;
+
         internal static TelegramBotClient Create(BotConfig config) {
             if (config.Proxy != null) {
                 var proxy = new HttpToSocks5Proxy(
@@ -14,9 +16,13 @@ namespace UmbrellaPingBotNext
                     username:       config.Proxy.Login,
                     password:       config.Proxy.Password
                 );
-                return new TelegramBotClient(config.Token, proxy);
+                _client = new TelegramBotClient(config.Token, proxy);
             }
-            return new TelegramBotClient(config.Token);
+            else
+                _client = new TelegramBotClient(config.Token);
+            return _client;
         }
+
+        public static TelegramBotClient Get() => _client;
     }
 }

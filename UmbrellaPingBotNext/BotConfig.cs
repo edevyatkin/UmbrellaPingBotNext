@@ -38,9 +38,9 @@ namespace UmbrellaPingBotNext
     internal class ConfigHelper
     {
         private const string schemaFile = "config-schema.json";
+        private static BotConfig _config;
 
         internal static BotConfig Load(string path) {
-            BotConfig config = default;
             List<string> validationErrors = new List<string>();
             Console.WriteLine("Loading config file...");
             try {
@@ -56,7 +56,7 @@ namespace UmbrellaPingBotNext
                             NamingStrategy = new SnakeCaseNamingStrategy()
                         }
                     };
-                    config = serializer.Deserialize<BotConfig>(vr);
+                    _config = serializer.Deserialize<BotConfig>(vr);
                     if (validationErrors.Count > 0) {
                         Console.WriteLine($"There are some validation errors:");
                         foreach (var error in validationErrors) {
@@ -70,7 +70,9 @@ namespace UmbrellaPingBotNext
                 throw e;
             }
             Console.WriteLine("Config loaded");
-            return config;
+            return _config;
         }
+
+        public static BotConfig Get() => _config;
     }
 }
