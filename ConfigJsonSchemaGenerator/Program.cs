@@ -43,11 +43,6 @@ namespace ConfigJsonSchemaGenerator
                         Console.WriteLine(help);
                         return;
                     }
-                    if (File.Exists(arg)) {
-                        Console.WriteLine($"File \"{arg}\" already exists");
-                        Console.WriteLine(help);
-                        return;
-                    }
                     if (dirName != string.Empty && !Directory.Exists(dirName)) {
                         Console.WriteLine($"Directory \"{dirName}\" does not exist");
                         Console.WriteLine(help);
