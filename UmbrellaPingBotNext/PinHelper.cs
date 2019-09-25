@@ -63,7 +63,7 @@ namespace UmbrellaPingBotNext
                 }
             }
             if (!isCorrect) {
-                throw new ArgumentException("Incorrect pin company", "company");
+                throw new ArgumentException("Incorrect pin company", nameof(company));
             }
         }
 
@@ -86,7 +86,7 @@ namespace UmbrellaPingBotNext
                 _text = Attack;
             }
             else
-                throw new ArgumentException("Incorrect pin type", "type");
+                throw new ArgumentException("Incorrect pin type", nameof(type));
         }
 
         public override string ToString() {
