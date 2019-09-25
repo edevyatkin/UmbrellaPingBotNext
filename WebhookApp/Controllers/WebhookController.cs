@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 
 namespace WebhookApp.Controllers
 {
-    [Route("bot")]
+    [Route("bot/update")]
     [ApiController]
     public class WebhookController : ControllerBase
     {
@@ -18,11 +18,12 @@ namespace WebhookApp.Controllers
         }
 
         [HttpPost]
-        public async Task PostAsync([FromBody] Update update) {
+        public async Task<IActionResult> PostAsync([FromBody] Update update) {
             if (update == null) {
-                return;
+                return BadRequest();
             }
             await stream.SendUpdateAsync(update);
+            return Ok();
         }
     }
 }

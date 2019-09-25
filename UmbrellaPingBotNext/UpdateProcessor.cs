@@ -33,7 +33,6 @@ namespace UmbrellaPingBotNext
             foreach (IUpdateRule rule in _rules.Values) {
                 if (rule.IsMatch(update)) {
                     rule.Process(update);
-                    break;
                 }
             }
         }

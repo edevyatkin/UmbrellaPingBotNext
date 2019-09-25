@@ -10,12 +10,14 @@ namespace UmbrellaPingBotNext
 {
     class Program
     {
+        private static TelegramBotClient _client;
         static async Task Main(string[] args) {
             try {
-                BotConfig config = ConfigHelper.Load("config.json");
-                TelegramBotClient client = BotFactory.Create(config);
-                var me = await client.GetMeAsync();
+                _client = await ClientFactory.GetAsync();
+                var me = await _client.GetMeAsync();
                 Console.WriteLine(me.Username);
+
+                Console.CancelKeyPress += Console_CancelKeyPressAsync;
 
                 ////
                 JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
@@ -35,6 +37,10 @@ namespace UmbrellaPingBotNext
             catch (Exception e) {
                 Console.WriteLine($"Something went wrong:{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}");
             }
+        }
+
+        private static void Console_CancelKeyPressAsync(object sender, ConsoleCancelEventArgs e) {
+            _client.DeleteWebhookAsync();
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -11,9 +8,16 @@ namespace UmbrellaPingBotNext.Rules
     {
         public bool IsMatch(Update update) {
             var tmr = UpdateProcessor.GetRule<TextMessageRule>();
+            var config = ConfigHelper.Get();
+            var message = update.Message;
             if (tmr.IsMatch(update)
-                && update.Message.Text == "."
-                && update.Message.Chat.Type == ChatType.Supergroup)
+                && message.Text.Equals(".")
+                && message.Chat.Type == ChatType.Supergroup
+                && message.Chat.Id == long.Parse(config.ChatId)
+                && message.ReplyToMessage != null
+                && message.ReplyToMessage.ForwardFrom != null
+                && message.ReplyToMessage.ForwardFrom.Username.Equals("StartupWarsInfoBot") 
+                && PinHelper.IsPin(message.ReplyToMessage))
                 return true;
 
             return false;

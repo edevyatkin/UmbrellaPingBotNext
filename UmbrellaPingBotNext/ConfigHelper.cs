@@ -20,6 +20,7 @@ namespace UmbrellaPingBotNext
         public BotProxy Proxy { get; set; }
         [JsonProperty(Required = Required.Always)]
         public List<string> Usernames { get; set; }
+        public string WebhookUrl { get; set; }
     }
 
     //  Socks5 proxy settings
