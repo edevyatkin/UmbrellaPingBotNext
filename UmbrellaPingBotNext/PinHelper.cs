@@ -12,6 +12,7 @@ namespace UmbrellaPingBotNext
             return new Pin {
                 MessageId = pinMessage.MessageId,
                 ChatId = pinMessage.Chat.Id,
+                MessageDate = pinMessage.ForwardDate ?? pinMessage.Date,
                 Type = new PinType(match.Groups[1].Value),
                 Company = new PinCompany(match.Groups[3].Value)
             };

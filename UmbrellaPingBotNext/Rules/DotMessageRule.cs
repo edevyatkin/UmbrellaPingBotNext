@@ -7,16 +7,16 @@ namespace UmbrellaPingBotNext.Rules
     internal class DotMessageRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
-            var tmr = UpdateProcessor.GetRule<TextMessageRule>();
             var config = ConfigHelper.Get();
             var message = update.Message;
-            if (tmr.IsMatch(update)
+            if (update.Type == UpdateType.Message
+                && update.Message.Type == MessageType.Text
                 && message.Text.Equals(".")
                 && message.Chat.Type == ChatType.Supergroup
                 && message.Chat.Id == long.Parse(config.ChatId)
                 && message.ReplyToMessage != null
-                && message.ReplyToMessage.ForwardFrom != null
-                && message.ReplyToMessage.ForwardFrom.Username.Equals("StartupWarsInfoBot") 
+                && message.ReplyToMessage.From != null
+                && message.ReplyToMessage.From.Username.Equals("StartupWarsInfoBot") 
                 && PinHelper.IsPin(message.ReplyToMessage))
                 return true;
 
@@ -27,19 +27,26 @@ namespace UmbrellaPingBotNext.Rules
             Console.WriteLine("Processing . message...");
             var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
 
-            PollHelper.CreatePoll(update.Message);
+            Pin pin = PinHelper.Parse(update.Message.ReplyToMessage);
+            if (pin.IsActual()) {
+                PollHelper.Create(pin);
+                PollView pollView = PollHelper.AsView();
 
-            PollView pollView = PollHelper.AsView();
-            string pollText = pollView.Text;
+                if (PollHelper.Exists())
+                    client.DeleteMessageAsync(
+                        chatId: PollHelper.ChatId,
+                        messageId: PollHelper.MessageId)
+                        .GetAwaiter().GetResult();
 
-            var message = client.SendTextMessageAsync(
-                chatId: update.Message.Chat.Id, 
-                text: pollText,
-                parseMode: ParseMode.Html,
-                replyMarkup: pollView.ReplyMarkup)
-                .GetAwaiter().GetResult();
-            PollHelper.ChatId = message.Chat.Id;
-            PollHelper.MessageId = message.MessageId;
+                var message = client.SendTextMessageAsync(
+                    chatId: update.Message.Chat.Id,
+                    text: pollView.Text,
+                    parseMode: ParseMode.Html,
+                    replyMarkup: pollView.ReplyMarkup)
+                    .GetAwaiter().GetResult();
+                PollHelper.ChatId = message.Chat.Id;
+                PollHelper.MessageId = message.MessageId;
+            }
 
             client.DeleteMessageAsync(
                 chatId: update.Message.Chat.Id,

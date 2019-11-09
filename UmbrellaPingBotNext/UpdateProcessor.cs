@@ -11,7 +11,7 @@ namespace UmbrellaPingBotNext
     internal class UpdateProcessor
     {
         private const string _rulesNamespace = "UmbrellaPingBotNext.Rules";
-        private static Dictionary<Type, IUpdateRule> _rules = new Dictionary<Type, IUpdateRule>();
+        private static Dictionary<string, IUpdateRule> _rules = new Dictionary<string, IUpdateRule>();
 
         static UpdateProcessor() {
             try {
@@ -19,7 +19,7 @@ namespace UmbrellaPingBotNext
                 Type[] types = Assembly.GetExecutingAssembly().GetTypes()
                     .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass)
                     .ToArray();
-                Array.ForEach(types, t => _rules.Add(t, (IUpdateRule)Activator.CreateInstance(t)));
+                Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
                 Console.WriteLine("Rules loaded!");
             }
             catch (Exception e) {
@@ -37,6 +37,6 @@ namespace UmbrellaPingBotNext
             }
         }
 
-        public static T GetRule<T>() => (T)_rules[typeof(T)];
+        public static T GetRule<T>() => (T)_rules[typeof(T).FullName];
     }
 }

@@ -6,7 +6,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace UmbrellaPingBotNext.Rules
 {
-    class PollCallbackRule : IUpdateRule
+    class PinPressedCallbackRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
             return (update.Type == UpdateType.CallbackQuery &&
@@ -16,11 +16,11 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public void Process(Update update) {
-            Console.WriteLine("Processing poll callback...");
+            Console.WriteLine("Processing pin pressed callback...");
             
             var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
             
-            bool userListUpdated = PollHelper.AddVote(update.CallbackQuery.From);
+            bool userListUpdated = PollHelper.AddActiveVote(update.CallbackQuery.From);
 
             PollView pollView = PollHelper.AsView();
 
@@ -36,9 +36,8 @@ namespace UmbrellaPingBotNext.Rules
 
             client.AnswerCallbackQueryAsync(
                 callbackQueryId: update.CallbackQuery.Id,
-                text: pollView.CallbackQueryAnswer)
+                text: pollView.ActiveCallbackQueryAnswer)
                 .GetAwaiter().GetResult();
-            ;
         }
     }
 }
