@@ -44,8 +44,6 @@ namespace UmbrellaPingBotNext
                 _jobServer.AddBattleNotificationPing(21,55);
                 _jobServer.AddFinishBattleOperation(22,00);
 
-                _jobServer.DisplayJobs();
-
                 Console.CancelKeyPress += Console_CancelKeyPressAsync;
 
                 ////
