@@ -18,7 +18,7 @@ namespace UmbrellaPingBotNext
         }
 
         internal static void AddFinishBattleOperation(this JobServer server, int hour, int minute) {
-            server.AddDaily<AddFinishBattleOperationJob>(hour, minute);
+            server.AddDaily<FinishBattleOperationJob>(hour, minute);
         }
     }
 }

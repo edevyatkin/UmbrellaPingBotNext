@@ -4,7 +4,7 @@ using System.Text;
 
 namespace UmbrellaPingBotNext.Jobs
 {
-    class AddFinishBattleOperationJob : IJob
+    class FinishBattleOperationJob : IJob
     {
         public void Do() {
             var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
