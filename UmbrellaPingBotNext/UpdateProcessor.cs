@@ -14,17 +14,12 @@ namespace UmbrellaPingBotNext
         private static Dictionary<string, IUpdateRule> _rules = new Dictionary<string, IUpdateRule>();
 
         static UpdateProcessor() {
-            try {
-                Console.WriteLine("Loading rules...");
-                Type[] types = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass)
-                    .ToArray();
-                Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
-                Console.WriteLine("Rules loaded!");
-            }
-            catch (Exception e) {
-                throw e;
-            }
+            Console.WriteLine("Loading rules...");
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass)
+                .ToArray();
+            Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
+            Console.WriteLine("Rules loaded!");
         }
 
         internal static void Process(Update update) {
