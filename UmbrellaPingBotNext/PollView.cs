@@ -47,7 +47,7 @@ namespace UmbrellaPingBotNext
             if (_poll.Votes.Count == 0)
                 return $"<i>{NoUsers}</i>";
 
-            var userListTitle = $"{(_poll.Pin.IsAttack() ? Attacking : Defending)} " +
+            var userListTitle = $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> " +
                                 $"({_poll.Votes.Where(u => u.Status == PollUserStatus.Active).ToList().Count})";
             var userList = new StringBuilder();
             foreach (var user in _poll.Votes.Where(u => u.Status == PollUserStatus.Active))
