@@ -46,20 +46,7 @@ namespace UmbrellaPingBotNext
 
                 Console.CancelKeyPress += Console_CancelKeyPressAsync;
 
-                ////
-                JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
-                using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream", PipeDirection.In)) {
-                    using (var streamReader = new StreamReader(pipeServer)) {
-                        while (true) {
-                            if (!pipeServer.IsConnected)
-                                await pipeServer.WaitForConnectionAsync();
-                            var jsonReader = new JsonTextReader(streamReader);
-                            Update update = jsonSerializer.Deserialize<Update>(jsonReader);
-                            UpdateProcessor.Process(update);
-                        }
-                    }
-                }
-                ////
+                await UpdateProcessor.Start();
             }
             catch (Exception e) {
                 Console.WriteLine($"Something went wrong:{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}");

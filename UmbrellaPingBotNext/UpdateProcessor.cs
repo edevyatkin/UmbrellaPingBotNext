@@ -5,6 +5,10 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using UmbrellaPingBotNext.Rules;
+using Newtonsoft.Json;
+using System.IO.Pipes;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace UmbrellaPingBotNext
 {
@@ -20,6 +24,21 @@ namespace UmbrellaPingBotNext
                 .ToArray();
             Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
             Console.WriteLine("Rules loaded!");
+        }
+
+        public static async Task Start() {
+            JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
+            using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream", PipeDirection.In)) {
+                using (var streamReader = new StreamReader(pipeServer)) {
+                    while (true) {
+                        if (!pipeServer.IsConnected)
+                            await pipeServer.WaitForConnectionAsync();
+                        var jsonReader = new JsonTextReader(streamReader);
+                        Update update = jsonSerializer.Deserialize<Update>(jsonReader);
+                        Process(update);
+                    }
+                }
+            }
         }
 
         internal static void Process(Update update) {
