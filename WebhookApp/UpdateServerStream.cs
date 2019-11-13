@@ -1,48 +1,46 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
 namespace WebhookApp
 {
     public interface IUpdateServerStream
     {
-        Task SendUpdateAsync(Update update);
+        Task SendUpdateAsync(Stream updateStream);
     }
 
     public class UpdateServerStream : IDisposable, IUpdateServerStream
     {
         private readonly NamedPipeClientStream _pipeClient;
-        private readonly StreamWriter _textWriter;
-        private readonly JsonSerializer _jsonSerializer;
         private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
         public UpdateServerStream() {
-            _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream", PipeDirection.Out);
-            _textWriter = new StreamWriter(_pipeClient);
-            _jsonSerializer = JsonSerializer.CreateDefault();
+            _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream",
+                PipeDirection.InOut, PipeOptions.Asynchronous);
         }
 
-        public async Task SendUpdateAsync(Update update) {
-            if (!_pipeClient.IsConnected)
+        public async Task SendUpdateAsync(Stream updateStream) {
+            if (!_pipeClient.IsConnected) {
                 await _pipeClient.ConnectAsync();
+                _pipeClient.ReadMode = PipeTransmissionMode.Message;
+            }
             try {
                 await semaphoreSlim.WaitAsync();
-                _jsonSerializer.Serialize(_textWriter, update);
-                await _textWriter.FlushAsync();
+                await updateStream.CopyToAsync(_pipeClient);
+            }
+            catch (IOException e) {
+                Console.WriteLine($"{e.Message}");
+                updateStream.Position = 0;
             }
             finally {
                 semaphoreSlim.Release();
             }
-
         }
 
         public void Dispose() {
-           _textWriter.Dispose();
+            _pipeClient.Close();
         }
     }
 }
