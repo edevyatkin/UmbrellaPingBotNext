@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using System.IO.Pipes;
 using System.IO;
 using System.Threading.Tasks;
-using System.Text;
 
 namespace UmbrellaPingBotNext
 {
@@ -28,27 +27,15 @@ namespace UmbrellaPingBotNext
         }
 
         public static async Task Start() {
-            using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream",
-                PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous)) {
-                while (true) {
-                    if (!pipeServer.IsConnected) {
-                        await pipeServer.WaitForConnectionAsync();
-                    }
-                    using (MemoryStream ms = new MemoryStream()) {
-                        byte[] buffer = new byte[4096];
-                        do {
-                            int count = await pipeServer.ReadAsync(buffer, 0, buffer.Length);
-                            await ms.WriteAsync(buffer, 0, count);
-                        } while (!pipeServer.IsMessageComplete);
-
-                        string json = Encoding.UTF8.GetString(ms.ToArray());
-                        Update update = JsonConvert.DeserializeObject<Update>(json);
-                        if (update == null) {
-                            Console.WriteLine("Pipe message is not JSON. Disconnect!");
-                            pipeServer.Disconnect();
-                        } else {
-                            Process(update);
-                        }
+            JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
+            using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream", PipeDirection.In)) {
+                using (var streamReader = new StreamReader(pipeServer)) {
+                    while (true) {
+                        if (!pipeServer.IsConnected)
+                            await pipeServer.WaitForConnectionAsync();
+                        var jsonReader = new JsonTextReader(streamReader);
+                        Update update = jsonSerializer.Deserialize<Update>(jsonReader);
+                        Process(update);
                     }
                 }
             }
