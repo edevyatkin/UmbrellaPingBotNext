@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.IO.Pipes;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace UmbrellaPingBotNext
 {
@@ -27,15 +28,25 @@ namespace UmbrellaPingBotNext
         }
 
         public static async Task Start() {
-            JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
-            using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream", PipeDirection.In)) {
-                using (var streamReader = new StreamReader(pipeServer)) {
+            using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream",
+                PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous)) {
+                using (var binaryReader = new BinaryReader(pipeServer, Encoding.UTF8)) {
                     while (true) {
                         if (!pipeServer.IsConnected)
                             await pipeServer.WaitForConnectionAsync();
-                        var jsonReader = new JsonTextReader(streamReader);
-                        Update update = jsonSerializer.Deserialize<Update>(jsonReader);
-                        Process(update);
+                        try {
+                            string json = binaryReader.ReadString();
+                            Update update = JsonConvert.DeserializeObject<Update>(json);
+                            if (update == null)
+                                Console.WriteLine("Incorrect Update object");
+                            else {
+                                Process(update);
+                            }
+                        }
+                        catch (EndOfStreamException) {
+                            Console.WriteLine("End of stream. Disconnect!");
+                            pipeServer.Disconnect();
+                        }
                     }
                 }
             }

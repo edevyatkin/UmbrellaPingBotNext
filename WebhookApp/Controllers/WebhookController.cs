@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Telegram.Bot.Types;
 
 namespace WebhookApp.Controllers
 {
@@ -18,12 +18,12 @@ namespace WebhookApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] Update update) {
-            if (update == null) {
-                return BadRequest();
+        public async Task<IActionResult> PostAsync() {
+            using (var reader = new StreamReader(Request.Body)) {
+                var updateJson = await reader.ReadToEndAsync();
+                var isSend = await stream.SendUpdateAsync(updateJson);
+                return isSend == true ? Ok() : StatusCode(500);
             }
-            await stream.SendUpdateAsync(update);
-            return Ok();
         }
     }
 }

@@ -1,48 +1,49 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
 namespace WebhookApp
 {
     public interface IUpdateServerStream
     {
-        Task SendUpdateAsync(Update update);
+        Task<bool> SendUpdateAsync(string updateJson);
     }
 
     public class UpdateServerStream : IDisposable, IUpdateServerStream
     {
         private readonly NamedPipeClientStream _pipeClient;
-        private readonly StreamWriter _textWriter;
-        private readonly JsonSerializer _jsonSerializer;
+        private readonly BinaryWriter _binaryWriter;
         private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
         public UpdateServerStream() {
-            _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream", PipeDirection.Out);
-            _textWriter = new StreamWriter(_pipeClient);
-            _jsonSerializer = JsonSerializer.CreateDefault();
+            _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream",
+                PipeDirection.InOut, PipeOptions.Asynchronous);
+            _binaryWriter = new BinaryWriter(_pipeClient, Encoding.UTF8);
         }
 
-        public async Task SendUpdateAsync(Update update) {
-            if (!_pipeClient.IsConnected)
+        public async Task<bool> SendUpdateAsync(string updateJson) {
+            if (!_pipeClient.IsConnected) {
                 await _pipeClient.ConnectAsync();
+            }
             try {
                 await semaphoreSlim.WaitAsync();
-                _jsonSerializer.Serialize(_textWriter, update);
-                await _textWriter.FlushAsync();
+                _binaryWriter.Write(updateJson);
+            }
+            catch (Exception e) {
+                Console.WriteLine($"{e.Message}");
+                return false;
             }
             finally {
                 semaphoreSlim.Release();
             }
-
+            return true;
         }
 
         public void Dispose() {
-           _textWriter.Dispose();
+            _binaryWriter.Close();
         }
     }
 }
