@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -22,9 +23,9 @@ namespace UmbrellaPingBotNext.Rules
             return false;
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing . message...");
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+            var client = await ClientFactory.GetAsync();
 
             Pin pin = PinHelper.Parse(update.Message.ReplyToMessage);
             if (pin.IsActual()) {
@@ -32,25 +33,22 @@ namespace UmbrellaPingBotNext.Rules
                 PollView pollView = PollHelper.AsView();
 
                 if (PollHelper.Exists())
-                    client.DeleteMessageAsync(
+                    await client.DeleteMessageAsync(
                         chatId: PollHelper.ChatId,
-                        messageId: PollHelper.MessageId)
-                        .GetAwaiter().GetResult();
+                        messageId: PollHelper.MessageId);
 
-                var message = client.SendTextMessageAsync(
+                var message = await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
-                    replyMarkup: pollView.ReplyMarkup)
-                    .GetAwaiter().GetResult();
+                    replyMarkup: pollView.ReplyMarkup);
                 PollHelper.ChatId = message.Chat.Id;
                 PollHelper.MessageId = message.MessageId;
             }
 
-            client.DeleteMessageAsync(
+            await client.DeleteMessageAsync(
                 chatId: update.Message.Chat.Id,
-                messageId: update.Message.MessageId)
-                .GetAwaiter().GetResult();
+                messageId: update.Message.MessageId);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Telegram.Bot.Types;
+using System.Threading.Tasks;
 
 namespace UmbrellaPingBotNext.Rules
 {
     internal interface IUpdateRule
     {
         bool IsMatch(Update update);
-        void Process(Update update);
+        Task ProcessAsync(Update update);
     }
 }

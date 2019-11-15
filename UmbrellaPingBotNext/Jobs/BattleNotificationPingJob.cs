@@ -8,8 +8,8 @@ namespace UmbrellaPingBotNext.Jobs
 {
     class BattleNotificationPingJob : IJob
     {
-        public void Do() {
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+        public async Task Do() {
+            var client = await ClientFactory.GetAsync();
 
             Console.WriteLine("Battle Notification Ping");
 
@@ -21,10 +21,9 @@ namespace UmbrellaPingBotNext.Jobs
             var usernamesToPing = PingHelper.ConstructMessages(list);
 
             foreach (var usernames in usernamesToPing) {
-                client.SendTextMessageAsync(
+                await client.SendTextMessageAsync(
                     chatId: PollHelper.ChatId,
-                    text: usernames)
-                    .GetAwaiter().GetResult();
+                    text: usernames);
             }
         }
     }

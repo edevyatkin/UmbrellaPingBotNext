@@ -21,13 +21,13 @@ namespace UmbrellaPingBotNext
         static UpdateProcessor() {
             Console.WriteLine("Loading rules...");
             Type[] types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass)
+                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass && !t.IsNestedPrivate)
                 .ToArray();
             Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
             Console.WriteLine("Rules loaded!");
         }
 
-        public static async Task Start() {
+        public static async Task StartAsync() {
             using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream",
                 PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous)) {
                 using (var binaryReader = new BinaryReader(pipeServer, Encoding.UTF8)) {
@@ -39,9 +39,8 @@ namespace UmbrellaPingBotNext
                             Update update = JsonConvert.DeserializeObject<Update>(json);
                             if (update == null)
                                 Console.WriteLine("Incorrect Update object");
-                            else {
-                                Process(update);
-                            }
+                            else
+                                await ProcessAsync(update);
                         }
                         catch (EndOfStreamException) {
                             Console.WriteLine("End of stream. Disconnect!");
@@ -52,12 +51,12 @@ namespace UmbrellaPingBotNext
             }
         }
 
-        internal static void Process(Update update) {
+        internal static async Task ProcessAsync(Update update) {
             if (_rules.Count == 0)
                 return;
             foreach (IUpdateRule rule in _rules.Values) {
                 if (rule.IsMatch(update)) {
-                    rule.Process(update);
+                    await rule.ProcessAsync(update);
                 }
             }
         }

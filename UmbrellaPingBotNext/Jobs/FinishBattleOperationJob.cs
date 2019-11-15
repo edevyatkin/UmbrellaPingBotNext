@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace UmbrellaPingBotNext.Jobs
 {
     class FinishBattleOperationJob : IJob
     {
-        public void Do() {
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+        public async Task Do() {
+            var client = await ClientFactory.GetAsync();
 
             Console.WriteLine("Finish Battle Operation");
 
             if (PollHelper.Exists()) {
-                client.DeleteMessageAsync(
+                await client.DeleteMessageAsync(
                     chatId: PollHelper.ChatId,
-                    messageId: PollHelper.MessageId)
-                    .GetAwaiter().GetResult();
+                    messageId: PollHelper.MessageId);
                 PollHelper.Reset();
             }
         }

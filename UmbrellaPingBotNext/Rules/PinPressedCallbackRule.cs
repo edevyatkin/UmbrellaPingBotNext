@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -15,29 +16,27 @@ namespace UmbrellaPingBotNext.Rules
                 update.CallbackQuery.Data == "pin_is_pressed");
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing pin pressed callback...");
-            
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+
+            var client = await ClientFactory.GetAsync();
             
             bool userListUpdated = PollHelper.AddActiveVote(update.CallbackQuery.From);
 
             PollView pollView = PollHelper.AsView();
 
             if (userListUpdated) {
-                client.EditMessageTextAsync(
+                await client.EditMessageTextAsync(
                     chatId: PollHelper.ChatId,
                     messageId: PollHelper.MessageId,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
-                    replyMarkup: pollView.ReplyMarkup)
-                    .GetAwaiter().GetResult();
+                    replyMarkup: pollView.ReplyMarkup);
             }
 
-            client.AnswerCallbackQueryAsync(
+            await client.AnswerCallbackQueryAsync(
                 callbackQueryId: update.CallbackQuery.Id,
-                text: pollView.ActiveCallbackQueryAnswer)
-                .GetAwaiter().GetResult();
+                text: pollView.ActiveCallbackQueryAnswer);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace UmbrellaPingBotNext
 
                 Console.CancelKeyPress += Console_CancelKeyPressAsync;
 
-                await UpdateProcessor.Start();
+                await UpdateProcessor.StartAsync();
             }
             catch (Exception e) {
                 Console.WriteLine($"Something went wrong:{Environment.NewLine}{e.Message}{Environment.NewLine}{e.StackTrace}");

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 namespace UmbrellaPingBotNext.Jobs
 {
     class BattleNotificationJob : IJob
     {
-        public void Do() {
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+        public async Task Do() {
+            var client = await ClientFactory.GetAsync();
 
             Console.WriteLine("Battle Notification");
 
@@ -16,17 +17,15 @@ namespace UmbrellaPingBotNext.Jobs
                 return;
 
             PollView pollView = PollHelper.AsView();
-            client.DeleteMessageAsync(
+            await client.DeleteMessageAsync(
                 chatId: PollHelper.ChatId,
-                messageId: PollHelper.MessageId)
-                .GetAwaiter().GetResult();
+                messageId: PollHelper.MessageId);
 
-            var message = client.SendTextMessageAsync(
+            var message = await client.SendTextMessageAsync(
                 chatId: PollHelper.ChatId,
                 text: pollView.Text,
                 parseMode: ParseMode.Html,
-                replyMarkup: pollView.ReplyMarkup)
-                .GetAwaiter().GetResult();
+                replyMarkup: pollView.ReplyMarkup);
             PollHelper.ChatId = message.Chat.Id;
             PollHelper.MessageId = message.MessageId;
         }
