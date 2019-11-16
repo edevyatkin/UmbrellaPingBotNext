@@ -6,7 +6,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace UmbrellaPingBotNext.Rules
 {
-    class PinPressedCallbackRule : IUpdateRule
+    internal class PinPressedCallbackRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<PollCallbackQueryRule>().IsMatch(update)
