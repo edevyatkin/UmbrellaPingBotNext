@@ -21,7 +21,7 @@ namespace UmbrellaPingBotNext
         static UpdateProcessor() {
             Console.WriteLine("Loading rules...");
             Type[] types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass)
+                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass && !t.IsNestedPrivate)
                 .ToArray();
             Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
             Console.WriteLine("Rules loaded!");
