@@ -20,7 +20,7 @@ namespace UmbrellaPingBotNext.Rules
             if (PollHelper.Exists()) {
                 var chatId = PollHelper.Pin.ChatId.ToString().Substring(4);
                 var messageId = PollHelper.Pin.MessageId;
-                var pressPinText = $"Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
+                var pressPinText = $"{PollHelper.Pin.Type}{PollHelper.Pin.Company.Logo}Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
                 client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: pressPinText,

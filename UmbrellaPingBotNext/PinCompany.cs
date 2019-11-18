@@ -8,6 +8,8 @@ namespace UmbrellaPingBotNext
         private static readonly Dictionary<string, string> _companies;
         private string _text;
 
+        public string Logo => _text.Substring(0,2);
+
         public static string Piper => _companies["piper"];
         public static string Hooli => _companies["hooli"];
         public static string Stark => _companies["stark"];
