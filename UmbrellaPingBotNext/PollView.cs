@@ -11,8 +11,8 @@ namespace UmbrellaPingBotNext
         private const string NoUsers = "Еще никто не прожался";
         private const string PinIsPressed = "🗡Я прожался!";
         private const string Sleep = "😴Сплю";
-        private const string Attacking = "⚔️Атакующие";
-        private const string Defending = "🛡Защищающие";
+        private const string Attacking = "Атакующие";
+        private const string Defending = "Защищающие";
         private const string AttackingCallback = "Атакуем";
         private const string DefendingCallback = "Защищаем";
 
@@ -38,7 +38,7 @@ namespace UmbrellaPingBotNext
 
             var chatId = _poll.Pin.ChatId.ToString().Substring(4);
             var messageId = _poll.Pin.MessageId;
-            var pressPinText = $"Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
+            var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo}Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
             
             return $"{nextBattleText}\n\n{pressPinText}";
         }
@@ -48,7 +48,7 @@ namespace UmbrellaPingBotNext
                 return $"<i>{NoUsers}</i>";
 
             var userListTitle = $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> " +
-                                $"({_poll.Votes.Where(u => u.Status == PollUserStatus.Active).ToList().Count})";
+                                $"({_poll.Votes.Where(u => u.Status == PollUserStatus.Active).ToList().Count}) <b>:</b>";
             var userList = new StringBuilder();
             foreach (var user in _poll.Votes.Where(u => u.Status == PollUserStatus.Active))
                 userList.Append($" ➥ {user}\n");

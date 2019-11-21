@@ -7,13 +7,11 @@ using Telegram.Bot.Types.Enums;
 
 namespace UmbrellaPingBotNext.Rules
 {
-    class SleepCallbackRule : IUpdateRule
+    internal class SleepCallbackRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
-            return (update.Type == UpdateType.CallbackQuery &&
-                    update.CallbackQuery.Message.Chat.Id == PollHelper.ChatId &&
-                    update.CallbackQuery.Message.MessageId == PollHelper.MessageId &&
-                    update.CallbackQuery.Data == "sleep_is_pressed");
+            return UpdateProcessor.GetRule<PollCallbackQueryRule>().IsMatch(update)
+                    && update.CallbackQuery.Data == "sleep_is_pressed";
         }
 
         public async Task ProcessAsync(Update update) {
