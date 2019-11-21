@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 namespace UmbrellaPingBotNext.Rules
@@ -12,14 +13,13 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.Text.Equals("/ping");
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing /ping message...");
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+            var client = await ClientFactory.GetAsync();
 
-            client.SendTextMessageAsync(
+            await client.SendTextMessageAsync(
                   chatId: update.Message.Chat.Id,
-                  text: "Pong!")
-                  .GetAwaiter().GetResult();
+                  text: "Pong!");
         }
     }
 }

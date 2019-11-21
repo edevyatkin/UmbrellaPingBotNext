@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -13,25 +14,23 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.Text.Equals("/pin");
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing /pin message...");
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+            var client = await ClientFactory.GetAsync();
 
             if (PollHelper.Exists()) {
                 var chatId = PollHelper.Pin.ChatId.ToString().Substring(4);
                 var messageId = PollHelper.Pin.MessageId;
                 var pressPinText = $"{PollHelper.Pin.Type}{PollHelper.Pin.Company.Logo}Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
-                client.SendTextMessageAsync(
+                await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: pressPinText,
-                    parseMode: ParseMode.Html)
-                    .GetAwaiter().GetResult();
+                    parseMode: ParseMode.Html);
             }
             else {
-                client.SendTextMessageAsync(
+                await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
-                    text: "Пина на битву ещё нет")
-                    .GetAwaiter().GetResult();
+                    text: "Пина на битву ещё нет");
             }
         }
     }

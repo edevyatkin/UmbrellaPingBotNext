@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types;
+﻿using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace UmbrellaPingBotNext.Rules
@@ -13,6 +14,6 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.Chat.Id == long.Parse(config.ChatId);
         }
 
-        public void Process(Update update) { }
+        public Task ProcessAsync(Update update) => Task.CompletedTask;
     }
 }

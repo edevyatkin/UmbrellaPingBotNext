@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -18,13 +19,12 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.Chat.Id != long.Parse(config.ChatId);
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing leave chat bot message...");
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+            var client = await ClientFactory.GetAsync();
 
-            client.LeaveChatAsync(
-                chatId: update.Message.Chat.Id)
-                .GetAwaiter().GetResult();
+            await client.LeaveChatAsync(
+                chatId: update.Message.Chat.Id);
         }
     }
 }

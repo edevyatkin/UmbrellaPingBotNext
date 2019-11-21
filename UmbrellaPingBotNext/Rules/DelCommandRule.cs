@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -15,19 +16,17 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.ReplyToMessage.MessageId != PollHelper.MessageId;
         }
 
-        public void Process(Update update) {
+        public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing /del message...");
-            var client = ClientFactory.GetAsync().GetAwaiter().GetResult();
+            var client = await ClientFactory.GetAsync();
 
-            client.DeleteMessageAsync(
+            await client.DeleteMessageAsync(
                 chatId: update.Message.Chat.Id,
-                messageId: update.Message.MessageId)
-                .GetAwaiter().GetResult();
+                messageId: update.Message.MessageId);
 
-            client.DeleteMessageAsync(
+            await client.DeleteMessageAsync(
                 chatId: update.Message.ReplyToMessage.Chat.Id,
-                messageId: update.Message.ReplyToMessage.MessageId)
-                .GetAwaiter().GetResult();
+                messageId: update.Message.ReplyToMessage.MessageId);
         }
     }
 }

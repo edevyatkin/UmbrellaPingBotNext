@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -13,6 +14,6 @@ namespace UmbrellaPingBotNext.Rules
                 && update.Message.ReplyToMessage != null;
         }
 
-        public void Process(Update update) { }
+        public Task ProcessAsync(Update update) => Task.CompletedTask;
     }
 }
