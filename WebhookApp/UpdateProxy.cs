@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace WebhookApp
 {
-    public interface IUpdateServerStream
+    public interface IUpdateProxy
     {
         Task<bool> SendUpdateAsync(string updateJson);
     }
 
-    public class UpdateServerStream : IDisposable, IUpdateServerStream
+    public class UpdateProxy : IDisposable, IUpdateProxy
     {
         private readonly NamedPipeClientStream _pipeClient;
         private readonly BinaryWriter _binaryWriter;
         private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
-        public UpdateServerStream() {
+        public UpdateProxy() {
             _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream",
                 PipeDirection.InOut, PipeOptions.Asynchronous);
             _binaryWriter = new BinaryWriter(_pipeClient, Encoding.UTF8);
