@@ -12,7 +12,7 @@ namespace UmbrellaPingBotNext
             if (_client != null)
                 return _client;
 
-            BotConfig config = ConfigHelper.Load("config.json");
+            BotConfig config = await ConfigHelper.LoadAsync("config.json");
             if (config.Proxy != null) {
                 var proxy = new HttpToSocks5Proxy(
                     socks5Hostname: config.Proxy.Server,

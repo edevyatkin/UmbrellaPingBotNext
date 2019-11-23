@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace UmbrellaPingBotNext
 {
@@ -41,35 +43,25 @@ namespace UmbrellaPingBotNext
         private const string schemaFile = "config-schema.json";
         private static BotConfig _config;
 
-        internal static BotConfig Load(string path) {
-            List<string> validationErrors = new List<string>();
+        internal static async Task<BotConfig> LoadAsync(string path) {
             Console.WriteLine("Loading config file...");
-            try {
-                using (var tr = File.OpenText(path))
-                using (var jtr = new JsonTextReader(tr))
-                using (var vr = new JSchemaValidatingReader(jtr)) {
-                    vr.Schema = JSchema.Parse(File.ReadAllText(schemaFile));
+            var configObj = JObject.Parse(await File.ReadAllTextAsync(path));
+            var jSchema = JSchema.Parse(await File.ReadAllTextAsync(schemaFile));
 
-                    vr.ValidationEventHandler += (o, a) => validationErrors.Add(a.Message);
-
-                    JsonSerializer serializer = new JsonSerializer() {
-                        ContractResolver = new CamelCasePropertyNamesContractResolver() {
-                            NamingStrategy = new SnakeCaseNamingStrategy()
-                        }
-                    };
-                    _config = serializer.Deserialize<BotConfig>(vr);
-                    if (validationErrors.Count > 0) {
-                        Console.WriteLine($"There are some validation errors:");
-                        foreach (var error in validationErrors) {
-                            Console.WriteLine(error);
-                        }
-                        return default;
-                    }
+            if (!configObj.IsValid(jSchema, out IList<string> errorMessages)) {
+                Console.WriteLine("There are some validation errors:");
+                foreach (var error in errorMessages) {
+                    Console.WriteLine(error);
                 }
+                throw new Exception($"Loading config file failed");
             }
-            catch (Exception e) {
-                throw e;
-            }
+
+            var serializer = new JsonSerializer() {
+                ContractResolver = new CamelCasePropertyNamesContractResolver() {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                }
+            };
+            _config = configObj.ToObject<BotConfig>(serializer);
             Console.WriteLine("Config loaded");
             return _config;
         }
