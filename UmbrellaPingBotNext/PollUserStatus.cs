@@ -4,9 +4,10 @@ using System.Text;
 
 namespace UmbrellaPingBotNext
 {
-    public enum PollUserStatus
+    public enum VoteType
     {
         Active,
         Sleep
     }
 }
+

@@ -9,7 +9,7 @@ namespace UmbrellaPingBotNext
     {
         public static long ChatId { get; internal set; }
         public static int MessageId { get; internal set; }
-        public static List<PollUser> Votes => _poll.Votes;
+        public static List<Vote> Votes => _poll.Votes;
         public static Pin Pin => _poll.Pin;
 
         private static Poll _poll;
@@ -22,26 +22,24 @@ namespace UmbrellaPingBotNext
         }
 
         internal static bool AddActiveVote(User user) {
-            if (_poll == null) {
-                throw new Exception("Poll is not created");
-            }
-            var puser = new PollUser(user, PollUserStatus.Active);
-            return _poll.AddVote(puser);
+            ThrowIfPollNull();
+            return _poll.AddVote(user, VoteType.Active);
         }
 
         internal static bool AddSleepVote(User user) {
-            if (_poll == null) {
-                throw new Exception("Poll is not created");
-            }
-            var puser = new PollUser(user, PollUserStatus.Sleep);
-            return _poll.AddVote(puser);
+            ThrowIfPollNull();
+            return _poll.AddVote(user, VoteType.Sleep);
         }
 
         internal static PollView AsView() {
+            ThrowIfPollNull();
+            return new PollView(_poll);
+        }
+
+        private static void ThrowIfPollNull() {
             if (_poll == null) {
                 throw new Exception("Poll is not created");
             }
-            return new PollView(_poll);
         }
 
         internal static bool Exists() => ChatId != 0 && MessageId != 0;
