@@ -11,17 +11,17 @@ namespace WebhookApp.Controllers
     [ApiController]
     public class WebhookController : ControllerBase
     {
-        private readonly IUpdateServerStream stream;
+        private readonly IUpdateProxy proxy;
 
-        public WebhookController(IUpdateServerStream stream) {
-            this.stream = stream;
+        public WebhookController(IUpdateProxy proxy) {
+            this.proxy = proxy;
         }
 
         [HttpPost]
         public async Task<IActionResult> PostAsync() {
             using (var reader = new StreamReader(Request.Body)) {
                 var updateJson = await reader.ReadToEndAsync();
-                var isSend = await stream.SendUpdateAsync(updateJson);
+                var isSend = await proxy.SendUpdateAsync(updateJson);
                 return isSend == true ? Ok() : StatusCode(500);
             }
         }

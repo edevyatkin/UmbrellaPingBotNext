@@ -20,8 +20,8 @@ namespace UmbrellaPingBotNext
 
         public string Text { get; }
         public InlineKeyboardMarkup ReplyMarkup { get; }
-        public string ActiveCallbackQueryAnswer => CreateActiveCallbackQueryAnswer();
-        public string SleepCallbackQueryAnswer => CreateSleepCallbackQueryAnswer();
+        public string ActiveCallbackQueryAnswer => $"{(_poll.Pin.IsAttack() ? AttackingCallback : DefendingCallback)} {_poll.Pin.Company} !";
+        public string SleepCallbackQueryAnswer => "Спокойных снов...";
 
         public PollView(Poll poll) {
             _poll = poll;
@@ -34,7 +34,7 @@ namespace UmbrellaPingBotNext
         }
 
         internal virtual string CreateTitle() {
-            string nextBattleText = $"👊<b>Битва в {_poll.Pin.BattleHour}:00 МСК</b>";
+            string nextBattleText = $"👊 <b>Битва в {_poll.Pin.BattleHour}:00 МСК</b>";
 
             var chatId = _poll.Pin.ChatId.ToString().Substring(4);
             var messageId = _poll.Pin.MessageId;
@@ -47,17 +47,27 @@ namespace UmbrellaPingBotNext
             if (_poll.Votes.Count == 0)
                 return $"<i>{NoUsers}</i>";
 
-            var userListTitle = $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> " +
-                                $"({_poll.Votes.Where(u => u.Status == PollUserStatus.Active).ToList().Count}) <b>:</b>";
-            var userList = new StringBuilder();
-            foreach (var user in _poll.Votes.Where(u => u.Status == PollUserStatus.Active))
-                userList.Append($" ➥ {user}\n");
-            userList.Append('\n');
-            foreach (var user in _poll.Votes.Where(u => u.Status == PollUserStatus.Sleep))
-                userList.Append($" 😴 {user}\n");
+            var activeVotes = GetVotesByType(VoteType.Active, v => $" ➥ {v.DisplayName}");
+            var sleepVotes = GetVotesByType(VoteType.Sleep, v => $" 😴 {v.DisplayName}");
 
-            return $"{userListTitle}\n{userList}";
+            var userListTitle = GetUserListTitle(activeVotes);
+
+            var userList = new StringBuilder()
+                .AppendJoin('\n', activeVotes)
+                .Append('\n')
+                .AppendJoin('\n', sleepVotes);
+
+            return $"{userListTitle}\n{userList.ToString()}";
         }
+
+        private IEnumerable<string> GetVotesByType(VoteType type, Func<Vote, string> voteFormatter) => 
+            _poll.Votes
+                .Where(v => v.Type == type)
+                .Select(voteFormatter);
+
+        private string GetUserListTitle(IEnumerable<string> activeVotes) =>
+            $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> ({activeVotes.ToList().Count}) <b>:</b>";
+
 
         private InlineKeyboardMarkup CreateReplyMarkup() {
             var pinButton = new InlineKeyboardButton() {
@@ -72,9 +82,5 @@ namespace UmbrellaPingBotNext
 
             return new InlineKeyboardMarkup(new List<InlineKeyboardButton>() { pinButton, sleepButton });
         }
-
-        private string CreateActiveCallbackQueryAnswer() => $"{(_poll.Pin.IsAttack() ? AttackingCallback : DefendingCallback)} {_poll.Pin.Company} !";
-
-        private string CreateSleepCallbackQueryAnswer() => "Спокойных снов...";
     }
 }

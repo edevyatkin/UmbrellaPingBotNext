@@ -5,33 +5,27 @@ namespace UmbrellaPingBotNext
 {
     internal class Poll
     {
-        internal List<PollUser> Votes { get; } = new List<PollUser>();
+        internal List<Vote> Votes { get; } = new List<Vote>();
         internal Pin Pin { get; }
 
         public Poll(Pin pin) {
             Pin = pin;
         }
 
-        public Poll(Pin pin, List<PollUser> votes) : this(pin) {
+        public Poll(Pin pin, List<Vote> votes) : this(pin) {
             Votes.AddRange(votes);
         }
 
-        public bool AddVote(PollUser user) {
-            if (!Votes.Contains(user)) {
-                Votes.Add(user);
-                return true;
+        public bool AddVote(User user, VoteType type) {
+            var foundVote = Votes.Find(v => v.UserId == user.Id);
+            if (foundVote != null) {
+                if (foundVote.Type != type)
+                    Votes.Remove(foundVote);
+                else 
+                    return false;
             }
-            var voteUser = Votes.Find(u => u.Equals(user));
-            if (voteUser.Status != user.Status) {
-                Votes.Remove(voteUser);
-                Votes.Add(user);
-                return true;
-            }
-            return false;
-        }
-
-        public void ClearVotes() {
-            Votes.Clear();
+            Votes.Add(new Vote(user, type));
+            return true;
         }
     }
 }
