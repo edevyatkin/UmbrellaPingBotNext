@@ -21,7 +21,7 @@ namespace WebhookApp.Controllers
         public async Task<IActionResult> PostAsync() {
             using (var reader = new StreamReader(Request.Body)) {
                 var updateJson = await reader.ReadToEndAsync();
-                var isSend = await proxy.SendUpdateAsync(updateJson);
+                var isSend = await proxy.SendUpdateAsync(updateJson.Replace('\n', ' '));
                 return isSend == true ? Ok() : StatusCode(500);
             }
         }

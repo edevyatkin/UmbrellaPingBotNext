@@ -15,13 +15,10 @@ namespace WebhookApp
     public class UpdateProxy : IDisposable, IUpdateProxy
     {
         private readonly NamedPipeClientStream _pipeClient;
-        private readonly BinaryWriter _binaryWriter;
-        private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
 
         public UpdateProxy() {
             _pipeClient = new NamedPipeClientStream(".", "telegrambot_upstream",
                 PipeDirection.InOut, PipeOptions.Asynchronous);
-            _binaryWriter = new BinaryWriter(_pipeClient, Encoding.UTF8);
         }
 
         public async Task<bool> SendUpdateAsync(string updateJson) {
@@ -29,21 +26,19 @@ namespace WebhookApp
                 await _pipeClient.ConnectAsync();
             }
             try {
-                await semaphoreSlim.WaitAsync();
-                _binaryWriter.Write(updateJson);
+                using var sw = new StreamWriter(_pipeClient, 
+                    new UTF8Encoding(false), 4096, true) { AutoFlush = true };
+                await sw.WriteLineAsync(updateJson);
             }
             catch (Exception e) {
                 Console.WriteLine($"{e.Message}");
                 return false;
             }
-            finally {
-                semaphoreSlim.Release();
-            }
             return true;
         }
 
         public void Dispose() {
-            _binaryWriter.Close();
+            _pipeClient.Close();
         }
     }
 }

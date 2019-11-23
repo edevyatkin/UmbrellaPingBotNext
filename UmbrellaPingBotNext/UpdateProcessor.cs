@@ -28,27 +28,20 @@ namespace UmbrellaPingBotNext
         }
 
         public static async Task StartAsync() {
+            Console.WriteLine("Start update processing...");
             using (var pipeServer = new NamedPipeServerStream("telegrambot_upstream",
                 PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous)) {
-                using (var binaryReader = new BinaryReader(pipeServer, Encoding.UTF8)) {
-                    while (true) {
+                using (var streamReader = new StreamReader(pipeServer, new UTF8Encoding(false))) {
+                    do {
                         if (!pipeServer.IsConnected)
                             await pipeServer.WaitForConnectionAsync();
-                        try {
-                            string json = binaryReader.ReadString();
-                            Update update = JsonConvert.DeserializeObject<Update>(json);
-                            if (update == null)
-                                Console.WriteLine("Incorrect Update object");
-                            else
-                                await ProcessAsync(update);
-                        }
-                        catch (EndOfStreamException) {
-                            Console.WriteLine("End of stream. Disconnect!");
-                            pipeServer.Disconnect();
-                        }
-                    }
+                        string json = await streamReader.ReadLineAsync();
+                        Update update = JsonConvert.DeserializeObject<Update>(json);
+                        await ProcessAsync(update);
+                    } while (!streamReader.EndOfStream);
                 }
             }
+            Console.WriteLine("Exit");
         }
 
         internal static async Task ProcessAsync(Update update) {
