@@ -24,6 +24,7 @@ namespace UmbrellaPingBotNext.Rules
             PollView pollView = PollHelper.AsView();
 
             if (userListUpdated) {
+                await PollVoteThrottle.Acquire();
                 await client.EditMessageTextAsync(
                     chatId: PollHelper.ChatId,
                     messageId: PollHelper.MessageId,
