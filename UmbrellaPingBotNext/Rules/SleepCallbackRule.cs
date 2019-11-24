@@ -32,9 +32,10 @@ namespace UmbrellaPingBotNext.Rules
                     replyMarkup: pollView.ReplyMarkup);
             }
 
-            await client.AnswerCallbackQueryAsync(
-                callbackQueryId: update.CallbackQuery.Id,
-                text: pollView.SleepCallbackQueryAnswer);
+            if (CallbackQueryHelper.MayAnswer(update.CallbackQuery))
+                await client.AnswerCallbackQueryAsync(
+                    callbackQueryId: update.CallbackQuery.Id,
+                    text: pollView.SleepCallbackQueryAnswer);
         }
     }
 }
