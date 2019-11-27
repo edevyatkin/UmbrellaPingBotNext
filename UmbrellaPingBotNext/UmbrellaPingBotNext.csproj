@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="Hangfire.Core" Version="1.7.7" />
-    <PackageReference Include="Hangfire.LiteDB" Version="0.2.1" />
-    <PackageReference Include="HttpToSocks5Proxy" Version="1.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Hangfire.LiteDB" Version="0.3.0" />
+    <PackageReference Include="HttpToSocks5Proxy" Version="1.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.11" />
     <PackageReference Include="Telegram.Bot" Version="15.0.0" />
   </ItemGroup>
