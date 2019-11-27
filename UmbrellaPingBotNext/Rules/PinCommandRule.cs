@@ -11,7 +11,7 @@ namespace UmbrellaPingBotNext.Rules
     {
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
-                && update.Message.Text.Equals("/pin");
+                && update.Message.Text.Equals($"/pin@{Constants.Bot}");
         }
 
         public async Task ProcessAsync(Update update) {

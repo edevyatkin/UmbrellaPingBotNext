@@ -13,9 +13,8 @@ namespace UmbrellaPingBotNext.Rules
         public bool IsMatch(Update update) {
             var config = ConfigHelper.Get();
             return update.Type == UpdateType.Message
-                && update.Message.NewChatMembers != null
-                && update.Message.NewChatMembers.Length != 0 
-                && update.Message.NewChatMembers.Where(u => u.Username == "UmbrellaPingBot") != null
+                && update.Message.Type == MessageType.ChatMembersAdded
+                && update.Message.NewChatMembers.Any(u => u.Username == Constants.Bot)
                 && update.Message.Chat.Id != long.Parse(config.ChatId);
         }
 

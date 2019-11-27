@@ -10,9 +10,8 @@ namespace UmbrellaPingBotNext.Rules
     internal class ReplyToBotMessageRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
-            return UpdateProcessor.GetRule<ReplyToMessageRule>().IsMatch(update)
-                && update.Message.ReplyToMessage.From != null
-                && update.Message.ReplyToMessage.From.Username == "UmbrellaPingBot";
+            return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
+                && update.Message.ReplyToMessage?.From.Username == Constants.Bot;
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

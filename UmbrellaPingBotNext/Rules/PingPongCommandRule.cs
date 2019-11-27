@@ -10,7 +10,7 @@ namespace UmbrellaPingBotNext.Rules
     {
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
-                && update.Message.Text.Equals("/ping");
+                && update.Message.Text.Equals($"/ping@{Constants.Bot}");
         }
 
         public async Task ProcessAsync(Update update) {
