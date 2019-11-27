@@ -18,7 +18,10 @@ namespace UmbrellaPingBotNext
 
         public JobServer() {
             GlobalConfiguration.Configuration.UseLiteDbStorage();
-            _server = new BackgroundJobServer();
+            var options = new BackgroundJobServerOptions() {
+                SchedulePollingInterval = TimeSpan.FromSeconds(5)
+            };
+            _server = new BackgroundJobServer(options);
 
             using (var connection = JobStorage.Current.GetConnection())
                 foreach (var recurringJob in StorageConnectionExtensions.GetRecurringJobs(connection)) {
