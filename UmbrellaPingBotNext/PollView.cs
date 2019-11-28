@@ -38,7 +38,7 @@ namespace UmbrellaPingBotNext
 
             var chatId = _poll.Pin.ChatId.ToString().Substring(4);
             var messageId = _poll.Pin.MessageId;
-            var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo}Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
+            var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo} Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
             
             return $"{nextBattleText}\n\n{pressPinText}";
         }
