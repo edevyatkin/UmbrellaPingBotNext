@@ -65,6 +65,9 @@ namespace UmbrellaPingBotNext
         }
 
         public static bool operator ==(BattleInterval left, BattleInterval right) {
+            if (left is null)
+                return false;
+
             return left.Equals(right);
         }
 
