@@ -16,7 +16,7 @@ namespace UmbrellaPingBotNext
         private const string AttackingCallback = "Атакуем";
         private const string DefendingCallback = "Защищаем";
 
-        protected Poll _poll;
+        private Poll _poll;
 
         public string Text { get; }
         public InlineKeyboardMarkup ReplyMarkup { get; }
@@ -36,9 +36,7 @@ namespace UmbrellaPingBotNext
         internal virtual string CreateTitle() {
             string nextBattleText = $"👊 <b>Битва в {_poll.Pin.BattleHour}:00 МСК</b>";
 
-            var chatId = _poll.Pin.ChatId.ToString().Substring(4);
-            var messageId = _poll.Pin.MessageId;
-            var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo} Прожимаемся в 📌<a href='https://t.me/c/{chatId}/{messageId}'>пин</a>";
+            var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo} Прожимаемся в 📌<a href='{_poll.Pin.LinkToMessage}'>пин</a>";
             
             return $"{nextBattleText}\n\n{pressPinText}";
         }

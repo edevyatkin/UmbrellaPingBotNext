@@ -10,14 +10,14 @@ namespace UmbrellaPingBotNext.Rules
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<ReplyToInfoBotMessageRule>().IsMatch(update)
                 && update.Message.Text.Equals(".")
-                && PinHelper.IsPin(update.Message.ReplyToMessage);
+                && Pin.IsPinMessage(update.Message.ReplyToMessage);
         }
 
         public async Task ProcessAsync(Update update) {
             Console.WriteLine("Processing . message...");
             var client = await ClientFactory.GetAsync();
 
-            Pin pin = PinHelper.Parse(update.Message.ReplyToMessage);
+            Pin pin = new Pin(update.Message.ReplyToMessage);
             if (pin.IsActual()) {
                 PollHelper.Create(pin);
                 PollView pollView = PollHelper.AsView();

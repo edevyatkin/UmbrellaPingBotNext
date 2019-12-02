@@ -2,21 +2,18 @@
 
 namespace UmbrellaPingBotNext
 {
-    public class PinType
+    internal class PinType
     {
         private readonly string _text;
         public static string Defence => "🛡";
         public static string Attack => "⚔";
 
         public PinType(string type) {
-            if (type == Defence) {
-                _text = Defence;
-            }
-            else if (type == Attack) {
-                _text = Attack;
-            }
-            else
-                throw new ArgumentException("Incorrect pin type", nameof(type));
+            _text = type switch
+            {
+                var x when x == Defence || x == Attack => x,
+                _ => throw new ArgumentException("Incorrect pin type", nameof(type))
+            };
         }
 
         public override string ToString() {

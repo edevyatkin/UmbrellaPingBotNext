@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UmbrellaPingBotNext
 {
-    public class PinCompany
+    internal class PinCompany
     {
         private static readonly Dictionary<string, string> _companies;
         private string _text;
