@@ -9,12 +9,12 @@ namespace UmbrellaPingBotNext.Jobs
     class BattleNotificationJob : IJob
     {
         public async Task Do() {
-            var client = await ClientFactory.GetAsync();
-
-            Console.WriteLine("Battle Notification");
-
             if (!PollHelper.Exists())
                 return;
+            
+            Console.WriteLine("Battle Notification");
+
+            var client = await ClientFactory.GetAsync();
 
             PollView pollView = PollHelper.AsView();
             await client.DeleteMessageAsync(

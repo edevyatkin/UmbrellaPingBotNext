@@ -9,12 +9,12 @@ namespace UmbrellaPingBotNext.Jobs
     class BattleNotificationPingJob : IJob
     {
         public async Task Do() {
-            var client = await ClientFactory.GetAsync();
+            if (!PollHelper.Exists())
+                return;
 
             Console.WriteLine("Battle Notification Ping");
 
-            if (!PollHelper.Exists())
-                return;
+            var client = await ClientFactory.GetAsync();
 
             var list = ConfigHelper.Get().Usernames.Except(PollHelper.Votes.Select(u => $"@{u.Username}").ToList()).ToList();
             

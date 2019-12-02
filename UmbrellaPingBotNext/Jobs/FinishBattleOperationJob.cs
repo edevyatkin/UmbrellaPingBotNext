@@ -8,16 +8,17 @@ namespace UmbrellaPingBotNext.Jobs
     class FinishBattleOperationJob : IJob
     {
         public async Task Do() {
-            var client = await ClientFactory.GetAsync();
-
+            if (!PollHelper.Exists())
+                return;
+            
             Console.WriteLine("Finish Battle Operation");
 
-            if (PollHelper.Exists()) {
-                await client.DeleteMessageAsync(
-                    chatId: PollHelper.ChatId,
-                    messageId: PollHelper.MessageId);
-                PollHelper.Reset();
-            }
+            var client = await ClientFactory.GetAsync();
+
+            await client.DeleteMessageAsync(
+                chatId: PollHelper.ChatId,
+                messageId: PollHelper.MessageId);
+            PollHelper.Reset();
         }
     }
 }
