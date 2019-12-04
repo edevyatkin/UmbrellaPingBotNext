@@ -15,13 +15,12 @@ namespace UmbrellaPingBotNext
 {
     internal class UpdateProcessor
     {
-        private const string _rulesNamespace = "UmbrellaPingBotNext.Rules";
         private static Dictionary<string, IUpdateRule> _rules = new Dictionary<string, IUpdateRule>();
 
         static UpdateProcessor() {
             Console.WriteLine("Loading rules...");
             Type[] types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => string.Equals(t.Namespace, _rulesNamespace, StringComparison.Ordinal) && t.IsClass && !t.IsNestedPrivate)
+                .Where(t => typeof(IUpdateRule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
                 .ToArray();
             Array.ForEach(types, t => _rules.Add(t.FullName, (IUpdateRule)Activator.CreateInstance(t)));
             Console.WriteLine("Rules loaded!");
