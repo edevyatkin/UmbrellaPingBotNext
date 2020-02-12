@@ -33,10 +33,9 @@ namespace UmbrellaPingBotNext.Rules
                     replyMarkup: pollView.ReplyMarkup);
             }
 
-            if (CallbackQueryHelper.MayAnswer(update.CallbackQuery))
-                await client.AnswerCallbackQueryAsync(
-                    callbackQueryId: update.CallbackQuery.Id,
-                    text: pollView.SleepCallbackQueryAnswer);
+            await client.AnswerCallbackQueryAsync(
+                callbackQueryId: update.CallbackQuery.Id,
+                text: pollView.SleepCallbackQueryAnswer);
         }
     }
 }
