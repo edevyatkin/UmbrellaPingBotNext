@@ -15,7 +15,7 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing pin pressed callback...");
+            Console.WriteLine($"[ {DateTime.Now.ToLocalTime()} ] Processing pin pressed callback... {update.CallbackQuery.From.Username}");
 
             var client = await ClientFactory.GetAsync();
             

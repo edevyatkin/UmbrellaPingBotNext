@@ -15,7 +15,7 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing sleep callback...");
+            Console.WriteLine($"[ {DateTime.Now.ToLocalTime()} ] Processing sleep callback... {update.CallbackQuery.From.Username}");
 
             var client = await ClientFactory.GetAsync();
 

@@ -14,7 +14,7 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing . message...");
+            Console.WriteLine($"[ {DateTime.Now.ToLocalTime()} ] Processing . message... {update.Message.From.Username}");
             var client = await ClientFactory.GetAsync();
 
             Pin pin = new Pin(update.Message.ReplyToMessage);
