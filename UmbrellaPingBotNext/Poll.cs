@@ -6,14 +6,12 @@ namespace UmbrellaPingBotNext
     internal class Poll
     {
         internal List<Vote> Votes { get; } = new List<Vote>();
-        internal Pin Pin { get; }
+        internal Pin Pin { get; set; }
+        public long ChatId { get; set; }
+        public int MessageId { get; set; }
 
         public Poll(Pin pin) {
             Pin = pin;
-        }
-
-        public Poll(Pin pin, List<Vote> votes) : this(pin) {
-            Votes.AddRange(votes);
         }
 
         public bool AddVote(User user, VoteType type) {
@@ -27,5 +25,10 @@ namespace UmbrellaPingBotNext
             Votes.Add(new Vote(user, type));
             return true;
         }
+
+        public void ClearVotes() {
+            Votes.Clear();
+        }
+        
     }
 }

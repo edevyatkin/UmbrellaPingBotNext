@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
@@ -15,19 +16,19 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"[ {DateTime.Now.ToLocalTime()} ] Processing pin pressed callback... {update.CallbackQuery.From.Username}");
+            Console.WriteLine($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing pin pressed callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
 
             var client = await ClientFactory.GetAsync();
             
-            bool userListUpdated = PollHelper.AddActiveVote(update.CallbackQuery.From);
-
-            PollView pollView = PollHelper.AsView();
+            Poll poll = PollsHelper.GetPoll(update.CallbackQuery.Message.Chat.Id);
+            bool userListUpdated = poll.AddActiveVote(update.CallbackQuery.From);
+            PollView pollView = poll.AsView();
 
             if (userListUpdated) {
                 await PollVoteThrottle.Acquire();
                 await client.EditMessageTextAsync(
-                    chatId: PollHelper.ChatId,
-                    messageId: PollHelper.MessageId,
+                    chatId: poll.ChatId,
+                    messageId: poll.MessageId,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
                     replyMarkup: pollView.ReplyMarkup);

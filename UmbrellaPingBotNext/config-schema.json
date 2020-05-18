@@ -5,9 +5,17 @@
       "type": "string",
       "pattern": "^[0-9]{9}:[-_a-zA-Z0-9]{0,35}$"
     },
-    "chat_id": {
-      "type": "string",
-      "pattern": "^-100[0-9]{10}$"
+    "bot": {
+      "type": "string"
+    },
+    "sw_info_bot": {
+      "type": "string"
+    },
+    "chats": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
     },
     "proxy": {
       "type": "object",
@@ -33,18 +41,33 @@
       ]
     },
     "usernames": {
-      "type": "array",
-      "items": {
-        "type": "string"
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       }
     },
     "webhook_url": {
       "type": "string"
+    },
+    "chat_admins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
     }
   },
   "required": [
     "token",
-    "chat_id",
-    "usernames"
+    "bot",
+    "sw_info_bot",
+    "chats",
+    "usernames",
+    "chat_admins"
   ]
 }

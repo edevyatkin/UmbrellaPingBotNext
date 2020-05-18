@@ -14,12 +14,12 @@ namespace UmbrellaPingBotNext.Rules
             var config = ConfigHelper.Get();
             return update.Type == UpdateType.Message
                 && update.Message.Type == MessageType.ChatMembersAdded
-                && update.Message.NewChatMembers.Any(u => u.Username == Constants.Bot)
-                && update.Message.Chat.Id != long.Parse(config.ChatId);
+                && update.Message.NewChatMembers.Any(u => u.Username == ConfigHelper.Get().Bot)
+                && !config.Chats.Contains(update.Message.Chat.Id);
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing leave chat bot message...");
+            Console.WriteLine($"Processing leave chat bot message..., chatId: {update.Message.Chat.Id.ToString()}");
             var client = await ClientFactory.GetAsync();
 
             await client.LeaveChatAsync(

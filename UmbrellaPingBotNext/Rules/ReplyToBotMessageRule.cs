@@ -11,7 +11,7 @@ namespace UmbrellaPingBotNext.Rules
     {
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
-                && update.Message.ReplyToMessage?.From.Username == Constants.Bot;
+                && update.Message.ReplyToMessage?.From.Username == ConfigHelper.Get().Bot;
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

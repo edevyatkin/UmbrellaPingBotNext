@@ -6,7 +6,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace UmbrellaPingBotNext
 {
-    internal class PollView
+    internal sealed class PollView
     {
         private const string NoUsers = "Еще никто не прожался";
         private const string PinIsPressed = "🗡Я прожался!";
@@ -16,7 +16,7 @@ namespace UmbrellaPingBotNext
         private const string AttackingCallback = "Атакуем";
         private const string DefendingCallback = "Защищаем";
 
-        private Poll _poll;
+        private readonly Poll _poll;
 
         public string Text { get; }
         public InlineKeyboardMarkup ReplyMarkup { get; }
@@ -33,7 +33,7 @@ namespace UmbrellaPingBotNext
             return $"{CreateTitle()}\n\n{CreateUserList()}";
         }
 
-        internal virtual string CreateTitle() {
+        private string CreateTitle() {
             string nextBattleText = $"👊 <b>Битва в {_poll.Pin.BattleHour}:00 МСК</b>";
 
             var pressPinText = $"{_poll.Pin.Type}{_poll.Pin.Company.Logo} Прожимаемся в 📌<a href='{_poll.Pin.LinkToMessage}'>пин</a>";
@@ -55,16 +55,17 @@ namespace UmbrellaPingBotNext
                 .Append('\n')
                 .AppendJoin('\n', sleepVotes);
 
-            return $"{userListTitle}\n{userList.ToString()}";
+            return $"{userListTitle}\n{userList}";
         }
 
-        private IEnumerable<string> GetVotesByType(VoteType type, Func<Vote, string> voteFormatter) => 
+        private List<string> GetVotesByType(VoteType type, Func<Vote, string> voteFormatter) => 
             _poll.Votes
                 .Where(v => v.Type == type)
-                .Select(voteFormatter);
+                .Select(voteFormatter)
+                .ToList();
 
-        private string GetUserListTitle(IEnumerable<string> activeVotes) =>
-            $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> ({activeVotes.ToList().Count}) <b>:</b>";
+        private string GetUserListTitle(List<string> activeVotes) =>
+            $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> ({activeVotes.Count.ToString()}) <b>:</b>";
 
 
         private InlineKeyboardMarkup CreateReplyMarkup() {

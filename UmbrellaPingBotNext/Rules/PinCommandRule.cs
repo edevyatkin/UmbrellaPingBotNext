@@ -10,18 +10,21 @@ namespace UmbrellaPingBotNext.Rules
     internal class PinCommandRule : IUpdateRule
     {
         public bool IsMatch(Update update) {
-            return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
-                && update.Message.Text.Equals($"/pin@{Constants.Bot}");
+            return UpdateProcessor.GetRule<MessageRule>().IsMatch(update) 
+                   && (update.Message.Text.Equals("/pin") 
+                       || update.Message.Text.Equals($"/pin@{ConfigHelper.Get().Bot}"));
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing /pin message...");
+            Console.WriteLine($"Processing /pin message..., chatId: {update.Message.Chat.Id.ToString()}");
+            
             var client = await ClientFactory.GetAsync();
-
-            if (PollHelper.Exists()) {
-                var pressPinText = $"{PollHelper.Pin.Type}{PollHelper.Pin.Company.Logo} Прожимаемся в 📌<a href='{PollHelper.Pin.LinkToMessage}'>пин</a>";
+            
+            if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
+                var poll = PollsHelper.GetPoll(update.Message.Chat.Id);
+                var pressPinText = $"{poll.Pin.Type}{poll.Pin.Company.Logo} Прожимаемся в 📌<a href='{poll.Pin.LinkToMessage}'>пин</a>";
                 await client.SendTextMessageAsync(
-                    chatId: update.Message.Chat.Id,
+                    chatId: poll.ChatId,
                     text: pressPinText,
                     parseMode: ParseMode.Html);
             }

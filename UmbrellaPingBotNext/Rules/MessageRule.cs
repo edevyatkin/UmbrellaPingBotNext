@@ -10,8 +10,7 @@ namespace UmbrellaPingBotNext.Rules
             var config = ConfigHelper.Get();
             return update.Type == UpdateType.Message
                 && update.Message.Type == MessageType.Text
-                && update.Message.Chat.Type == ChatType.Supergroup
-                && update.Message.Chat.Id == long.Parse(config.ChatId);
+                && config.Chats.Contains(update.Message.Chat.Id);
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

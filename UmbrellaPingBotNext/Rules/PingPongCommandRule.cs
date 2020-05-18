@@ -10,11 +10,12 @@ namespace UmbrellaPingBotNext.Rules
     {
         public bool IsMatch(Update update) {
             return UpdateProcessor.GetRule<MessageRule>().IsMatch(update)
-                && update.Message.Text.Equals($"/ping@{Constants.Bot}");
+                   && (update.Message.Text.Equals("/ping") 
+                       || update.Message.Text.Equals($"/ping@{ConfigHelper.Get().Bot}"));
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine("Processing /ping message...");
+            Console.WriteLine($"Processing /ping message..., chatId: {update.Message.Chat.Id.ToString()}");
             var client = await ClientFactory.GetAsync();
 
             await client.SendTextMessageAsync(

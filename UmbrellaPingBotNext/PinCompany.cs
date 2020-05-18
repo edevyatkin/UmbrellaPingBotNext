@@ -5,19 +5,19 @@ namespace UmbrellaPingBotNext
 {
     internal class PinCompany
     {
-        private static readonly Dictionary<string, string> _companies;
+        private static readonly Dictionary<string, string> Companies;
         private string _text;
 
         public string Logo => _text.Substring(0,2);
 
-        public static string Piper => _companies["piper"];
-        public static string Hooli => _companies["hooli"];
-        public static string Stark => _companies["stark"];
-        public static string Umbrella => _companies["umbrl"];
-        public static string Wayne => _companies["wayne"];
+        public static string Piper => Companies["piper"];
+        public static string Hooli => Companies["hooli"];
+        public static string Stark => Companies["stark"];
+        public static string Umbrella => Companies["umbrl"];
+        public static string Wayne => Companies["wayne"];
 
         static PinCompany() {
-            _companies = new Dictionary<string, string> {
+            Companies = new Dictionary<string, string> {
                 ["piper"] = "📯Pied Piper",
                 ["hooli"] = "🤖Hooli",
                 ["stark"] = "⚡️Stark Ind.",
@@ -28,7 +28,7 @@ namespace UmbrellaPingBotNext
 
         public PinCompany(string company) {
             bool isCorrect = false;
-            foreach (string c in _companies.Values) {
+            foreach (string c in Companies.Values) {
                 if (string.Equals(c, company)) {
                     isCorrect = true;
                     _text = company;

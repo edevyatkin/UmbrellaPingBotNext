@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -14,26 +15,34 @@ namespace UmbrellaPingBotNext.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"[ {DateTime.Now.ToLocalTime()} ] Processing . message... {update.Message.From.Username}");
+            Console.WriteLine($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing . message... , chatId: {update.Message.Chat.Id.ToString()}, {update.Message.From.Username}");
             var client = await ClientFactory.GetAsync();
-
+            
             Pin pin = new Pin(update.Message.ReplyToMessage);
             if (pin.IsActual()) {
-                PollHelper.Create(pin);
-                PollView pollView = PollHelper.AsView();
-
-                if (PollHelper.Exists())
+                Poll poll;
+                
+                if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
+                    poll = PollsHelper.GetPoll(update.Message.Chat.Id);
                     await client.DeleteMessageAsync(
-                        chatId: PollHelper.ChatId,
-                        messageId: PollHelper.MessageId);
+                        chatId: poll.ChatId,
+                        messageId: poll.MessageId);
+                    PollsHelper.UpdatePoll(poll.ChatId, pin);
+                }
+                else {
+                    poll = PollsHelper.CreatePoll(update.Message.Chat.Id, pin);
+                }
+                
+                PollView pollView = poll.AsView();
 
                 var message = await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
                     replyMarkup: pollView.ReplyMarkup);
-                PollHelper.ChatId = message.Chat.Id;
-                PollHelper.MessageId = message.MessageId;
+                
+                poll.ChatId = message.Chat.Id;
+                poll.MessageId = message.MessageId;
             }
 
             await client.DeleteMessageAsync(

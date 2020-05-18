@@ -9,21 +9,24 @@ namespace UmbrellaPingBotNext.Jobs
     class BattleNotificationPingJob : IJob
     {
         public async Task Do() {
-            if (!PollHelper.Exists())
-                return;
-
-            Console.WriteLine("Battle Notification Ping");
-
             var client = await ClientFactory.GetAsync();
+            var polls = PollsHelper.Polls;
+            var usernames = ConfigHelper.Get().Usernames;
+            foreach (var poll in polls.Values) {
+                if (!usernames.ContainsKey(poll.ChatId))
+                    continue;
+                
+                Console.WriteLine($"Battle Notification Ping, chatId: {poll.ChatId.ToString()}");
 
-            var list = ConfigHelper.Get().Usernames.Except(PollHelper.Votes.Select(u => $"@{u.Username}").ToList()).ToList();
+                var list = usernames[poll.ChatId].Except(poll.Votes.Select(u => $"@{u.Username}")).ToList();
             
-            var usernamesToPing = PingHelper.ConstructMessages(list);
+                var usernamesToPing = PingHelper.ConstructMessages(list);
 
-            foreach (var usernames in usernamesToPing) {
-                await client.SendTextMessageAsync(
-                    chatId: PollHelper.ChatId,
-                    text: usernames);
+                foreach (var names in usernamesToPing) {
+                    await client.SendTextMessageAsync(
+                        chatId: poll.ChatId,
+                        text: names);
+                }
             }
         }
     }
