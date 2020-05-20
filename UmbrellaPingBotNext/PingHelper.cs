@@ -5,9 +5,9 @@ using System.Text;
 
 namespace UmbrellaPingBotNext
 {
-    class PingHelper
+    internal static class PingHelper
     {
-        private const int partCount = 5;
+        private const int PartCount = 5;
 
         public static IEnumerable<string> ConstructMessages(List<string> usernames) {
             var list = SplitList(usernames);
@@ -19,8 +19,8 @@ namespace UmbrellaPingBotNext
         // https://stackoverflow.com/a/11463800
         private static IEnumerable<List<T>> SplitList<T>(List<T> items) {
             items.Sort();
-            for (int i = 0; i < items.Count; i += partCount) {
-                yield return items.GetRange(i, Math.Min(partCount, items.Count - i));
+            for (int i = 0; i < items.Count; i += PartCount) {
+                yield return items.GetRange(i, Math.Min(PartCount, items.Count - i));
             }
         }
     }
