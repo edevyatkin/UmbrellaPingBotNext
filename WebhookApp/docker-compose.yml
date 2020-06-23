@@ -1,0 +1,13 @@
+﻿version: '3'
+services:
+  bot:
+    build: .
+    ports:
+      - "8888:5000"
+    environment:
+      ASPNETCORE_URLS: http://+:5000
+      TZ: Europe/Moscow
+    restart: always
+    volumes:
+    - ./config.json:/app/config.json
+  

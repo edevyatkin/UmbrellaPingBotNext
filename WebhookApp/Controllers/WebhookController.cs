@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Telegram.Bot.Types;
+using WebhookApp.Services;
 
 namespace WebhookApp.Controllers
 {
@@ -11,19 +14,19 @@ namespace WebhookApp.Controllers
     [ApiController]
     public class WebhookController : ControllerBase
     {
-        private readonly IUpdateProxy proxy;
+        private readonly ILogger<WebhookController> _logger;
+        private readonly UpdateService _service;
 
-        public WebhookController(IUpdateProxy proxy) {
-            this.proxy = proxy;
+        public WebhookController(ILogger<WebhookController> logger, UpdateService service) {
+            _logger = logger;
+            _service = service;
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync() {
-            using (var reader = new StreamReader(Request.Body)) {
-                var updateJson = await reader.ReadToEndAsync();
-                var isSend = await proxy.SendUpdateAsync(updateJson.Replace('\n', ' '));
-                return isSend == true ? Ok() : StatusCode(500);
-            }
+        public async Task<IActionResult> PostAsync([FromBody] Update update) {
+            _logger.LogDebug($"Update processing...");
+            await _service.ProcessAsync(update);
+            return Ok();
         }
     }
 }
