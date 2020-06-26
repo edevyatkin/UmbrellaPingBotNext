@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Hangfire;
-using Hangfire.LiteDB;
 
 namespace WebhookApp
 {

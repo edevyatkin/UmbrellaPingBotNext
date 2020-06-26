@@ -1,10 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using MihaZupan;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace WebhookApp.Services
 {
