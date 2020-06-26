@@ -38,7 +38,6 @@ namespace WebhookApp
             });
             services.AddHangfireServer(options =>
                 options.SchedulePollingInterval = TimeSpan.FromSeconds(5));
-            //services.AddHostedService<JobService>();
             services
                 .AddControllers()
                 .AddNewtonsoftJson();
