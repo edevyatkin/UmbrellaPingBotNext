@@ -3,11 +3,10 @@ using Hangfire;
 using Hangfire.LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebhookApp.Models;
+using WebhookApp.Jobs;
 using WebhookApp.Rules;
 using WebhookApp.Services;
 
@@ -74,6 +73,7 @@ namespace WebhookApp
             
             jobManager.AddBattleNotification(18,30);
             jobManager.AddBattleNotificationPing(18,31);
+            jobManager.AddDaily<FactoryEatNotificationJob>(18,32);
             jobManager.AddBattleNotificationPing(18,55);
             jobManager.AddFinishBattleOperation(19,00);
             
