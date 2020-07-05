@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <None Include="config-schema.json" />
-    <None Include="config.json">
+    <None Include="config.json" Condition="Exists('config.json')">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
