@@ -20,7 +20,7 @@ namespace WebhookApp.Controllers
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] Update update) {
-            _logger.LogDebug($"Update processing...");
+            _logger.LogDebug("Update processing...");
             await _service.ProcessAsync(update);
             return Ok();
         }
