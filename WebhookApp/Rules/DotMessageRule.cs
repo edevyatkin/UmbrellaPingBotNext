@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
@@ -11,10 +12,12 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly ReplyToInfoBotMessageRule _messageRule;
+        private readonly ILogger<DotMessageRule> _logger;
 
-        public DotMessageRule(BotService botService, ReplyToInfoBotMessageRule messageRule) {
+        public DotMessageRule(BotService botService, ReplyToInfoBotMessageRule messageRule, ILogger<DotMessageRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
+            _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
@@ -24,7 +27,7 @@ namespace WebhookApp.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing . message... , chatId: {update.Message.Chat.Id.ToString()}, {update.Message.From.Username}");
+            _logger.LogInformation($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing . message... , chatId: {update.Message.Chat.Id.ToString()}, {update.Message.From.Username}");
             
             Pin pin = new Pin(update.Message.ReplyToMessage);
             if (pin.IsActual()) {

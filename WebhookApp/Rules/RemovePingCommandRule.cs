@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using WebhookApp.Services;
 
@@ -12,11 +13,13 @@ namespace WebhookApp.Rules
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
         private readonly ConfigService _configService;
+        private readonly ILogger<RemovePingCommandRule> _logger;
 
-        public RemovePingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService) {
+        public RemovePingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<RemovePingCommandRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
             _configService = configService;
+            _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
@@ -28,7 +31,7 @@ namespace WebhookApp.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"Processing /removeping message..., chatId: {update.Message.Chat.Id.ToString()}");
+            _logger.LogInformation($"Processing /removeping message..., chatId: {update.Message.Chat.Id.ToString()}");
             
             BotConfig config = await _configService.LoadAsync();
             var usernames = config.Usernames;

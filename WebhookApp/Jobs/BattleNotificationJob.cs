@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
 
@@ -8,14 +9,16 @@ namespace WebhookApp.Jobs
     class BattleNotificationJob : IJob
     {
         private readonly BotService _botService;
+        private readonly ILogger<BattleNotificationJob> _logger;
 
-        public BattleNotificationJob(BotService botService) {
+        public BattleNotificationJob(BotService botService, ILogger<BattleNotificationJob> logger) {
             _botService = botService;
+            _logger = logger;
         }
         public async Task Do() {
             var polls = PollsHelper.Polls;
             foreach (var poll in polls.Values) {
-                Console.WriteLine($"Battle Notification, chatId: {poll.ChatId.ToString()}");
+                _logger.LogInformation($"Battle Notification, chatId: {poll.ChatId.ToString()}");
                 
                 PollView pollView = poll.AsView();
                 await _botService.Client.DeleteMessageAsync(

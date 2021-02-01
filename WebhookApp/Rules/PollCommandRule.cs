@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
@@ -11,11 +12,13 @@ namespace WebhookApp.Rules
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
         private readonly ConfigService _configService;
+        private readonly ILogger<PollCommandRule> _logger;
 
-        public PollCommandRule(BotService botService, MessageRule messageRule, ConfigService configService) {
+        public PollCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<PollCommandRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
             _configService = configService;
+            _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
@@ -26,7 +29,7 @@ namespace WebhookApp.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"Processing /poll message..., chatId: {update.Message.Chat.Id.ToString()}");
+            _logger.LogInformation($"Processing /poll message..., chatId: {update.Message.Chat.Id.ToString()}");
             
             if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                 var poll = PollsHelper.GetPoll(update.Message.Chat.Id);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
@@ -10,9 +11,11 @@ namespace WebhookApp.Rules
     internal class PollOldPollCallbackQueryRule : IUpdateRule
     {
         private readonly BotService _botService;
+        private readonly ILogger<PollOldPollCallbackQueryRule> _logger;
 
-        public PollOldPollCallbackQueryRule(BotService botService) {
+        public PollOldPollCallbackQueryRule(BotService botService, ILogger<PollOldPollCallbackQueryRule> logger) {
             _botService = botService;
+            _logger = logger;
         }
         
         public Task<bool> IsMatch(Update update) {
@@ -25,7 +28,7 @@ namespace WebhookApp.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing old pressing callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
+            _logger.LogInformation($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing old pressing callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
 
             await _botService.Client.AnswerCallbackQueryAsync(
                 callbackQueryId: update.CallbackQuery.Id,

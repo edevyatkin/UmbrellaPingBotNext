@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using WebhookApp.Services;
 
 namespace WebhookApp.Jobs
@@ -9,10 +10,12 @@ namespace WebhookApp.Jobs
     {
         private readonly BotService _botService;
         private readonly ConfigService _configService;
+        private readonly ILogger<BattleNotificationPingJob> _logger;
 
-        public BattleNotificationPingJob(BotService botService, ConfigService configService) {
+        public BattleNotificationPingJob(BotService botService, ConfigService configService, ILogger<BattleNotificationPingJob> logger) {
             _botService = botService;
             _configService = configService;
+            _logger = logger;
         }
         
         public async Task Do() {
@@ -23,7 +26,7 @@ namespace WebhookApp.Jobs
                 if (!usernames.ContainsKey(poll.ChatId))
                     continue;
                 
-                Console.WriteLine($"Battle Notification Ping, chatId: {poll.ChatId.ToString()}");
+                _logger.LogInformation($"Battle Notification Ping, chatId: {poll.ChatId.ToString()}");
 
                 var list = usernames[poll.ChatId].Except(poll.Votes.Select(u => $"@{u.Username}")).ToList();
             

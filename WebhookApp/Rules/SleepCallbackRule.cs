@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
@@ -11,10 +12,12 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly PollCallbackQueryRule _queryRule;
+        private readonly ILogger<SleepCallbackRule> _logger;
 
-        public SleepCallbackRule(BotService botService, PollCallbackQueryRule queryRule) {
+        public SleepCallbackRule(BotService botService, PollCallbackQueryRule queryRule, ILogger<SleepCallbackRule> logger) {
             _botService = botService;
             _queryRule = queryRule;
+            _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
@@ -23,7 +26,7 @@ namespace WebhookApp.Rules
         }
 
         public async Task ProcessAsync(Update update) {
-            Console.WriteLine($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing sleep callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
+            _logger.LogInformation($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing sleep callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
 
             Poll poll = PollsHelper.GetPoll(update.CallbackQuery.Message.Chat.Id);
             bool userListUpdated = poll.AddSleepVote(update.CallbackQuery.From);
