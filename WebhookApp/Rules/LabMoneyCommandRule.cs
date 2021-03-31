@@ -11,12 +11,14 @@ internal class LabMoneyCommandRule : IUpdateRule
 {
     private readonly MessageRule _messageRule;
     private readonly BotService _botService;
+    private readonly ConfigService _config;
     private readonly ILogger<LabMoneyCommandRule> _logger;
 
-    public LabMoneyCommandRule(ILogger<LabMoneyCommandRule> logger, MessageRule messageRule, BotService botService)
+    public LabMoneyCommandRule(ILogger<LabMoneyCommandRule> logger, MessageRule messageRule, BotService botService, ConfigService config)
     {
         _messageRule = messageRule;
         _botService = botService;
+        _config = config;
         _logger = logger;
     }
     
@@ -29,8 +31,9 @@ internal class LabMoneyCommandRule : IUpdateRule
     public async Task ProcessAsync(Update update)
     {
         var text = update.Message.Text;
+        var config = await _config.LoadAsync();
         var pattern = @"^\/labmoney (?'level'\d{1,2}) (?'count'\d{1,2})$";
-        if (text == "/labmoney") {
+        if (text == "/labmoney" || text == $"/labmoney@{config.Bot}") {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text: "<b>Расчет затрат лаборатории</b>\nФормат команды:\n/labmoney <i>ваш_уровень</i> <i>количество_нанимаемых</i>\nУровень от 1 до 99, количество от 1 до 99",
