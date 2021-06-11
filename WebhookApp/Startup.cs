@@ -53,8 +53,6 @@ namespace WebhookApp
             
             botService.Run();
 
-            app.UseHangfireDashboard();
-            
             JobManager jobManager = new JobManager();
             jobManager.AddBattleNotification(9,30);
             jobManager.AddBattleNotificationPing(9,31);
