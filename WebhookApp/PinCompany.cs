@@ -6,29 +6,20 @@ namespace WebhookApp
 {
     internal class PinCompany
     {
-        private static readonly Dictionary<string, string> Companies;
+        private static readonly HashSet<string> Companies;
         private readonly string _text;
 
         public string Logo => _text.Substring(0,2);
 
-        public static string Piper => Companies["piper"];
-        public static string Hooli => Companies["hooli"];
-        public static string Stark => Companies["stark"];
-        public static string Umbrella => Companies["umbrl"];
-        public static string Wayne => Companies["wayne"];
-
         static PinCompany() {
-            Companies = new Dictionary<string, string> {
-                ["piper"] = "📯Pied Piper",
-                ["hooli"] = "🤖Hooli",
-                ["stark"] = "⚡️Stark Ind.",
-                ["umbrl"] = "☂️Umbrella",
-                ["wayne"] = "🎩Wayne Ent."
+            Companies = new HashSet<string> {
+                "📯Pied Piper", "🤖Hooli", "⚡️Stark Ind.", 
+                "☂️Umbrella", "🎩Wayne Ent."
             };
         }
 
         public PinCompany(string company) {
-            if (!Companies.Values.Contains(company))
+            if (!Companies.Contains(company))
                 throw new ArgumentException("Incorrect pin company", nameof(company));
             _text = company;
         }
