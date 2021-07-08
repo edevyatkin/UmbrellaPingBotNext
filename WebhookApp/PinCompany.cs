@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebhookApp
 {
     internal class PinCompany
     {
         private static readonly Dictionary<string, string> Companies;
-        private string _text;
+        private readonly string _text;
 
         public string Logo => _text.Substring(0,2);
 
@@ -27,17 +28,9 @@ namespace WebhookApp
         }
 
         public PinCompany(string company) {
-            bool isCorrect = false;
-            foreach (string c in Companies.Values) {
-                if (string.Equals(c, company)) {
-                    isCorrect = true;
-                    _text = company;
-                    break;
-                }
-            }
-            if (!isCorrect) {
+            if (!Companies.Values.Contains(company))
                 throw new ArgumentException("Incorrect pin company", nameof(company));
-            }
+            _text = company;
         }
 
         public override string ToString() {
