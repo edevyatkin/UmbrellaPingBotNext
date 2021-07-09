@@ -14,7 +14,7 @@ namespace WebhookApp
         static PinCompany() {
             Companies = new HashSet<string> {
                 "📯Pied Piper", "🤖Hooli", "⚡️Stark Ind.", 
-                "☂️Umbrella", "🎩Wayne Ent."
+                "☂️Umbrella", "🎩Wayne Ent.", "☣️Black Mesa"
             };
         }
 
