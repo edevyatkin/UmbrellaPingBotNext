@@ -80,6 +80,7 @@ namespace WebhookApp
             jobManager.AddBattleNotificationPing(21,55);
             jobManager.AddFinishBattleOperation(22,00);
             jobManager.AddDaily<SleepNotificationJob>(22,05);
+            jobManager.AddDaily<SleepNotificationJob>(23,00);
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
