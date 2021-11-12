@@ -1,4 +1,6 @@
 ﻿using Telegram.Bot.Types;
+using WebhookApp.Services.PollsService;
+using Poll = WebhookApp.Services.PollsService.Poll;
 
 namespace WebhookApp
 {

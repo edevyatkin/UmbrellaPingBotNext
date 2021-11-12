@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Telegram.Bot.Types;
 
-namespace WebhookApp
+namespace WebhookApp.Services.PollsService
 {
     internal class Poll
     {

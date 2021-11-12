@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WebhookApp.Services;
+using WebhookApp.Services.PollsService;
 
 namespace WebhookApp.Jobs
 {

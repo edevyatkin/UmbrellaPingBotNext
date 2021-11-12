@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
+using WebhookApp.Services.PollsService;
 
 namespace WebhookApp.Jobs
 {

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace WebhookApp
+namespace WebhookApp.Services.PollsService
 {
     internal static class PollsHelper
     {
