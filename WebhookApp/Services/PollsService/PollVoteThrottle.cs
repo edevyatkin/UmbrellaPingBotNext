@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebhookApp
+namespace WebhookApp.Services.PollsService
 {
     internal static class PollVoteThrottle
     {
