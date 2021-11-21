@@ -1,5 +1,16 @@
+using Microsoft.Extensions.Logging;
+using WebhookApp.Services.PollsService.Infrastructure;
+
 namespace WebhookApp.Services.PollsService {
     class PollsService : IPollsService {
+        private readonly ILogger<IPollsService> _logger;
+        private readonly IPollsStorage _storage;
+
+        public PollsService(ILogger<PollsService> logger, IPollsStorage storage) {
+            _logger = logger;
+            _storage = storage;
+        }
+        
         Poll IPollsService.CreatePoll(long chatId, Pin pin) {
             return PollsHelper.CreatePoll(chatId, pin);
         }
