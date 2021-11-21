@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types;
 
-namespace WebhookApp.Services.PollsService
+namespace WebhookApp.Services.Polls
 {
     internal static class PollExtensions
     {

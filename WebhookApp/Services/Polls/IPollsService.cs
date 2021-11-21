@@ -1,4 +1,4 @@
-namespace WebhookApp.Services.PollsService {
+namespace WebhookApp.Services.Polls {
     public interface IPollsService {
         internal Poll CreatePoll(long chatId, Pin pin);
         internal void UpdatePoll(long chatId, Pin pin);

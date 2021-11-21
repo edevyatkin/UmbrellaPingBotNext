@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services.PollsService;
+using WebhookApp.Services.Polls;
 
 namespace WebhookApp.Rules
 {

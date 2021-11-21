@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace WebhookApp.Services.PollsService
+namespace WebhookApp.Services.Polls
 {
     internal sealed class PollView
     {

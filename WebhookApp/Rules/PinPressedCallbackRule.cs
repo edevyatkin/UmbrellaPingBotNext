@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
-using WebhookApp.Services.PollsService;
-using Poll = WebhookApp.Services.PollsService.Poll;
+using WebhookApp.Services.Polls;
+using Poll = WebhookApp.Services.Polls.Poll;
 
 namespace WebhookApp.Rules
 {

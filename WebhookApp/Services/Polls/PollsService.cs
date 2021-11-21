@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using WebhookApp.Services.PollsService.Infrastructure;
+using WebhookApp.Services.Polls.Infrastructure;
 
-namespace WebhookApp.Services.PollsService {
+namespace WebhookApp.Services.Polls {
     class PollsService : IPollsService {
         private readonly ILogger<IPollsService> _logger;
         private readonly IPollsStorage _storage;
