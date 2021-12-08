@@ -32,7 +32,8 @@ namespace WebhookApp.Jobs
 
                 var list = usernames[poll.ChatId].Except(poll.Votes.Select(u => $"@{u.Username}")).ToList();
             
-                var usernamesToPing = PingHelper.ConstructMessages(list);
+                var usernamesToPing = list
+                    .OrderBy(u => u).Chunk(5).Select(users => string.Join(' ',users));
 
                 foreach (var names in usernamesToPing) {
                     await _botService.Client.SendTextMessageAsync(
