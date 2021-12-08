@@ -68,17 +68,15 @@ namespace WebhookApp.Services.Polls
             $"<b>{(_poll.Pin.IsAttack() ? Attacking : Defending)}</b> ({activeVotes.Count.ToString()}) <b>:</b>";
 
 
-        private InlineKeyboardMarkup CreateReplyMarkup() {
-            var pinButton = new InlineKeyboardButton() {
-                CallbackData = "pin_is_pressed",
-                Text = PinIsPressed
-            };
-
-            var sleepButton = new InlineKeyboardButton() {
-                CallbackData = "sleep_is_pressed",
-                Text = Sleep
-            };
-
+        private static InlineKeyboardMarkup CreateReplyMarkup() {
+            var pinButton = InlineKeyboardButton.WithCallbackData(
+                text : PinIsPressed,
+                callbackData: "pin_is_pressed"
+            );
+            var sleepButton = InlineKeyboardButton.WithCallbackData(
+                text : Sleep,
+                callbackData : "sleep_is_pressed"
+            );
             return new InlineKeyboardMarkup(new List<InlineKeyboardButton>() { pinButton, sleepButton });
         }
     }

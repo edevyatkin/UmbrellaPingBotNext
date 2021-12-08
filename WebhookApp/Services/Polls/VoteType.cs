@@ -1,4 +1,4 @@
-﻿namespace WebhookApp
+﻿namespace WebhookApp.Services.Polls
 {
     public enum VoteType
     {

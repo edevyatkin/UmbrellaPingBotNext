@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
 using WebhookApp.Services.Polls;

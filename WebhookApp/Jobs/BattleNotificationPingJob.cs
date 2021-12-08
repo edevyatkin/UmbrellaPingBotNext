@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net.Http;
+using Microsoft.Extensions.Logging;
 using MihaZupan;
 using Telegram.Bot;
 
@@ -21,7 +22,11 @@ namespace WebhookApp.Services
                     username:       config.Proxy.Login,
                     password:       config.Proxy.Password
                 );
-                Client = new TelegramBotClient(config.Token, proxy);
+                proxy.ResolveHostnamesLocally = true;
+                var httpClient = new HttpClient(
+                    new HttpClientHandler { Proxy = proxy, UseProxy = true }
+                );
+                Client = new TelegramBotClient(config.Token, httpClient);
             }
             else
                 Client = new TelegramBotClient(config.Token);

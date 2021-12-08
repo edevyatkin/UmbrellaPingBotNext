@@ -1,10 +1,10 @@
 ﻿using Telegram.Bot.Types;
 
-namespace WebhookApp
+namespace WebhookApp.Services.Polls
 {
     internal class Vote
     {
-        public int UserId { get;  }
+        public long UserId { get;  }
         public string Username { get; }
         public string DisplayName { get; }
         public VoteType Type { get; }

@@ -32,8 +32,8 @@ namespace WebhookApp.Services
                     try {
                         await rule.ProcessAsync(update);
                     }
-                    catch (InvalidParameterException ipe) {
-                        _logger.LogError("Rule processing error: {0}", ipe.Message);
+                    catch (ApiRequestException ex) {
+                        _logger.LogError("Rule processing error: {0}", ex.Message);
                     }
                 }
             }
