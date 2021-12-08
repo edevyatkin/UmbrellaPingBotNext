@@ -8,12 +8,15 @@ namespace WebhookApp
         public DateTimeOffset Start { get; }
         public DateTimeOffset End { get; }
 
-        private BattleInterval(DateTimeOffset start, DateTimeOffset end) {
+        internal BattleInterval(DateTimeOffset start, DateTimeOffset end) {
             Start = start;
             End = end;
         }
 
         internal static BattleInterval FromDateTimeUtc(DateTime utcDateTime) {
+            if (utcDateTime.Kind != DateTimeKind.Utc)
+                throw new ArgumentException(nameof(utcDateTime));
+            
             DateTimeOffset dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(TimeSpan.FromHours(3));
             int hour = dateTimeOffset.Hour;
             List<int> hourList = new List<int>() { 0, 10, 13, 16, 19, 22, 24 };
