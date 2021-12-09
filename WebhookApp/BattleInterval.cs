@@ -17,7 +17,8 @@ namespace WebhookApp
             if (utcDateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(utcDateTime));
             
-            DateTimeOffset dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(TimeSpan.FromHours(3));
+            var mskTimeOffset = TimeZoneInfo.FindSystemTimeZoneById("Europe/Moscow").BaseUtcOffset;
+            var dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(mskTimeOffset);
             int hour = dateTimeOffset.Hour;
             List<int> hourList = new List<int>() { 0, 10, 13, 16, 19, 22, 24 };
             (int left, int right) = GetBounds(hour, hourList);
@@ -25,16 +26,16 @@ namespace WebhookApp
             DateTimeOffset leftDateTimeOffset, rightDateTimeOffset;
 
             if (hourList[left] == 0) {
-                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(22, 0, 0));
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(10, 0, 0));
+                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(22, 0, 0), mskTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(10, 0, 0), mskTimeOffset);
             }
             else if (hourList[right] == 24) {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(22, 0, 0));
-                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(10, 0, 0));
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(22, 0, 0), mskTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(10, 0, 0), mskTimeOffset);
             }
             else {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[left], 0, 0));
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[right], 0, 0));
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[left], 0, 0), mskTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[right], 0, 0), mskTimeOffset);
             }
 
             return new BattleInterval(leftDateTimeOffset, rightDateTimeOffset);
