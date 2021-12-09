@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using WebhookApp.Jobs;
 using WebhookApp.Rules;
 using WebhookApp.Services;
+using WebhookApp.Services.Laboratory;
 
 namespace WebhookApp
 {
@@ -31,6 +32,7 @@ namespace WebhookApp
                     .WithScopedLifetime();
             });
             services.AddScoped<UpdateService>();
+            services.AddTransient<ILaboratoryService, LaboratoryService>();
             services.AddHangfire(configuration => {
                 configuration
                     .UseLiteDbStorage();
