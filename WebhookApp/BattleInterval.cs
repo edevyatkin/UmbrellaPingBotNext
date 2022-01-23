@@ -21,42 +21,28 @@ namespace WebhookApp
             var botTimeOffset = Constants.BotTimeZoneInfo.BaseUtcOffset;
             var dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(botTimeOffset);
             int hour = dateTimeOffset.Hour;
-            List<int> hourList = new List<int>() { 0, 10, 13, 16, 19, 22, 24 };
-            (int left, int right) = GetBounds(hour, hourList);
+            List<int> hourList = new List<int>() { 10, 13, 16, 19, 22 };
+
+            int ix = hourList.BinarySearch(hour);
+            if (ix < 0)
+                ix = ~ix - 1;
 
             DateTimeOffset leftDateTimeOffset, rightDateTimeOffset;
 
-            if (hourList[left] == 0) {
-                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(22, 0, 0), botTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(10, 0, 0), botTimeOffset);
+            if (ix == -1) {
+                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(hourList[^1], 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[0], 0, 0), botTimeOffset);
             }
-            else if (hourList[right] == 24) {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(22, 0, 0), botTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(10, 0, 0), botTimeOffset);
+            else if (ix == hourList.Count-1) {
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[^1], 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(hourList[0], 0, 0), botTimeOffset);
             }
             else {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[left], 0, 0), botTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[right], 0, 0), botTimeOffset);
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[ix], 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[ix+1], 0, 0), botTimeOffset);
             }
 
             return new BattleInterval(leftDateTimeOffset, rightDateTimeOffset);
-        }
-
-        private static (int left, int right) GetBounds(int hour, List<int> hourList) {
-            int left = 0, right = hourList.Count;
-            while (left < right) {
-                int index = left + ((right - left) >> 1);
-                if (hour < hourList[index])
-                    right = index;
-                else if (hour > hourList[index])
-                    left = index + 1;
-                else {
-                    right = index + 1;
-                    break;
-                }
-            }
-            left = right - 1;
-            return (left, right);
         }
 
         public override bool Equals(object obj) {
