@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WebhookApp.Common;
 
 namespace WebhookApp
 {
@@ -17,8 +18,8 @@ namespace WebhookApp
             if (utcDateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(utcDateTime));
             
-            var mskTimeOffset = TimeZoneInfo.FindSystemTimeZoneById("Europe/Moscow").BaseUtcOffset;
-            var dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(mskTimeOffset);
+            var botTimeOffset = Constants.BotTimeZoneInfo.BaseUtcOffset;
+            var dateTimeOffset = new DateTimeOffset(utcDateTime).ToOffset(botTimeOffset);
             int hour = dateTimeOffset.Hour;
             List<int> hourList = new List<int>() { 0, 10, 13, 16, 19, 22, 24 };
             (int left, int right) = GetBounds(hour, hourList);
@@ -26,16 +27,16 @@ namespace WebhookApp
             DateTimeOffset leftDateTimeOffset, rightDateTimeOffset;
 
             if (hourList[left] == 0) {
-                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(22, 0, 0), mskTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(10, 0, 0), mskTimeOffset);
+                leftDateTimeOffset = new DateTimeOffset((dateTimeOffset - TimeSpan.FromDays(1)).Date + new TimeSpan(22, 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(10, 0, 0), botTimeOffset);
             }
             else if (hourList[right] == 24) {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(22, 0, 0), mskTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(10, 0, 0), mskTimeOffset);
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(22, 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset((dateTimeOffset + TimeSpan.FromDays(1)).Date + new TimeSpan(10, 0, 0), botTimeOffset);
             }
             else {
-                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[left], 0, 0), mskTimeOffset);
-                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[right], 0, 0), mskTimeOffset);
+                leftDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[left], 0, 0), botTimeOffset);
+                rightDateTimeOffset = new DateTimeOffset(dateTimeOffset.Date + new TimeSpan(hourList[right], 0, 0), botTimeOffset);
             }
 
             return new BattleInterval(leftDateTimeOffset, rightDateTimeOffset);
