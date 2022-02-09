@@ -23,18 +23,20 @@ namespace WebhookApp.Jobs
             var polls = PollsHelper.Polls;
             BotConfig config = await _configService.LoadAsync();
             var usernames = config.LotteryUsernames;
-            foreach (var poll in polls.Values) {
-                if (!usernames.ContainsKey(poll.ChatId))
-                    continue;
-                
-                _logger.LogInformation($"Lottery Ping, chatId: {poll.ChatId.ToString()}");
+            foreach (var chatId in usernames.Keys) {
+                _logger.LogInformation($"Lottery Ping, chatId: {chatId}");
 
-                var usernamesToPing = usernames
+                var usernamesToPing = usernames[chatId]
                     .OrderBy(u => u).Chunk(5).Select(users => string.Join(' ',users));
+
+                var ticketsBuyText = "🤑Купить все";
+                await _botService.Client.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: ticketsBuyText);
 
                 foreach (var names in usernamesToPing) {
                     await _botService.Client.SendTextMessageAsync(
-                        chatId: poll.ChatId,
+                        chatId: chatId,
                         text: names);
                 }
             }
