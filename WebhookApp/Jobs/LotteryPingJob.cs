@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 
@@ -29,10 +30,11 @@ namespace WebhookApp.Jobs
                 var usernamesToPing = usernames[chatId]
                     .OrderBy(u => u).Chunk(5).Select(users => string.Join(' ',users));
 
-                var ticketsBuyText = "🤑Купить все";
+                var ticketsBuyText = "`🤑Купить все`";
                 await _botService.Client.SendTextMessageAsync(
                         chatId: chatId,
-                        text: ticketsBuyText);
+                        text: ticketsBuyText,
+                        parseMode: ParseMode.MarkdownV2);
 
                 foreach (var names in usernamesToPing) {
                     await _botService.Client.SendTextMessageAsync(
