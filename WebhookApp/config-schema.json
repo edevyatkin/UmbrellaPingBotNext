@@ -49,6 +49,15 @@
         }
       }
     },
+    "lottery_usernames": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
     "webhook_url": {
       "type": "string"
     },

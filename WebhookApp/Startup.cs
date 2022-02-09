@@ -76,6 +76,8 @@ namespace WebhookApp
             jobManager.AddDaily<FactoryEatNotificationJob>(18,32);
             jobManager.AddBattleNotificationPing(18,55);
             jobManager.AddFinishBattleOperation(19,00);
+
+            jobManager.AddDaily<LotteryPingJob>(19,17);
             
             jobManager.AddBattleNotification(21,30);
             jobManager.AddBattleNotificationPing(21,31);
