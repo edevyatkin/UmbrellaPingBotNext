@@ -19,7 +19,7 @@ namespace WebhookApp
         public BotProxy Proxy { get; set; }
         [JsonProperty(Required = Required.Always)]
         public Dictionary<long, List<string>> Usernames { get; set; }
-        public Dictionary<long, List<string>> LotteryUsernames { get; set; }
+        public Dictionary<long, List<string>> LotteryUsernames { get; set; } = new();
         public string WebhookUrl { get; set; }
         public Dictionary<long, List<string>> ChatAdmins { get; set; }
     }
