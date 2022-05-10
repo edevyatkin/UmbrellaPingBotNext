@@ -43,7 +43,6 @@ public class SmoothieMessageRule : IUpdateRule {
         var smoothie = new Smoothie(
             text[1].EnumerateRunes().Select(c => ingredientNumbers[c.ToString()]).ToArray()
         );
-        Console.WriteLine(smoothie.ToString());
         var smoothieStatus = text[3] switch {
             var t when t.Contains("Самый шикарный") => SmoothieStatus.Best,
             var t when t.Contains("Отличный") => SmoothieStatus.Excellent,
@@ -51,7 +50,6 @@ public class SmoothieMessageRule : IUpdateRule {
             var t when t.Contains("Неплохой") => SmoothieStatus.Normal,
             _ => SmoothieStatus.Poor
         };
-        Console.WriteLine(smoothieStatus);
         _smoothieService.Filter(smoothie, smoothieStatus);
         if (_smoothieService.BestSmoothieStatus == SmoothieStatus.Best) {
             await _botService.Client.SendTextMessageAsync(
