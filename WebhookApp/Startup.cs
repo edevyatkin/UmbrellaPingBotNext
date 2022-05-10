@@ -10,6 +10,7 @@ using WebhookApp.Jobs;
 using WebhookApp.Rules;
 using WebhookApp.Services;
 using WebhookApp.Services.Laboratory;
+using WebhookApp.Services.Smoothie;
 
 namespace WebhookApp
 {
@@ -25,6 +26,7 @@ namespace WebhookApp
         public void ConfigureServices(IServiceCollection services) {
             services.AddSingleton<ConfigService>();
             services.AddSingleton<BotService>();
+            services.AddSingleton<ISmoothieService, SmoothieService>();
             services.Scan(scan => {
                 scan.FromAssemblyOf<IUpdateRule>()
                     .AddClasses(classes => classes.AssignableTo<IUpdateRule>())
@@ -56,6 +58,8 @@ namespace WebhookApp
             botService.Run();
 
             JobManager jobManager = new JobManager();
+            jobManager.AddDaily<SmoothieResetJob>(3,0);
+
             jobManager.AddBattleNotification(9,30);
             jobManager.AddBattleNotificationPing(9,31);
             jobManager.AddBattleNotificationPing(9,55);
