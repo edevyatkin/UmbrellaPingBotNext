@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
+using WebhookApp.Common;
 
 namespace WebhookApp
 {
@@ -14,7 +15,7 @@ namespace WebhookApp
         public PinCompany Company { get; }
 
         public int BattleHour => _battleInterval.End.Hour;
-        public string LinkToMessage => $"https://t.me/c/{_chatId.ToString().Substring(4)}/{_messageId.ToString()}";
+        public string LinkToMessage => Utils.LinkToMessage(_chatId, _messageId);
 
         public Pin(Message message) {
             _messageId = message.MessageId;
