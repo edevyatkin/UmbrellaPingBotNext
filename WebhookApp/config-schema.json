@@ -72,11 +72,7 @@
     }
   },
   "required": [
-    "token",
-    "bot",
-    "sw_info_bot",
     "chats",
-    "usernames",
     "chat_admins"
   ]
 }

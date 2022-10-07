@@ -7,24 +7,24 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using WebhookApp.Services;
-using WebhookApp.Services.Battle;
+using WebhookApp.Services.Lottery;
 
 namespace WebhookApp.Rules
 {
-    internal class RemovePingCommandRule : IUpdateRule
+    internal class RemoveLotteryPingCommandRule : IUpdateRule
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
         private readonly ConfigService _configService;
-        private readonly ILogger<RemovePingCommandRule> _logger;
-        private readonly IBattleService _battleService;
+        private readonly ILogger<RemoveLotteryPingCommandRule> _logger;
+        private readonly ILotteryService _lotteryService;
 
-        public RemovePingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<RemovePingCommandRule> logger, IBattleService battleService) {
+        public RemoveLotteryPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<RemoveLotteryPingCommandRule> logger, ILotteryService lotteryService) {
             _botService = botService;
             _messageRule = messageRule;
             _configService = configService;
             _logger = logger;
-            _battleService = battleService;
+            _lotteryService = lotteryService;
         }
         
         public async Task<bool> IsMatch(Update update) {
@@ -32,11 +32,11 @@ namespace WebhookApp.Rules
             return await _messageRule.IsMatch(update)
                    && config.ChatAdmins.ContainsKey(update.Message.Chat.Id)
                    && config.ChatAdmins[update.Message.Chat.Id].Contains($"@{update.Message.From.Username}")
-                   && Regex.IsMatch(update.Message.Text, @"^\/removeping[\n\s]+\@\w+([\n\s]+\@\w+)*$");
+                   && Regex.IsMatch(update.Message.Text, @"^\/removelotping[\n\s]+\@\w+([\n\s]+\@\w+)*$");
         }
 
         public async Task ProcessAsync(Update update) {
-            _logger.LogInformation($"Processing /removeping message..., chatId: {update.Message.Chat.Id.ToString()}");
+            _logger.LogInformation($"Processing /removelotping message..., chatId: {update.Message.Chat.Id.ToString()}");
             
             var inputUsernames = update.Message.Text
                 .Split(new[] {'\n', ' '}, StringSplitOptions.RemoveEmptyEntries)
@@ -46,19 +46,19 @@ namespace WebhookApp.Rules
                 .ToList();
             var removedUsers = new List<Abstractions.User>();
             foreach (var user in inputUsernames)
-                if (await _battleService.RemovePingAsync(user, update.Message.Chat.Id))
+                if (await _lotteryService.RemovePingAsync(user, update.Message.Chat.Id))
                     removedUsers.Add(user);
             if (removedUsers.Count > 0) {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     replyToMessageId: update.Message.MessageId,
-                    text: $"Удалены пинги:\n{string.Join('\n', removedUsers.Select(u => $"🗡{u.Username}"))}");
+                    text: $"Удалены пинги на лотерею:\n{string.Join('\n', removedUsers.Select(u => $"🗡{u.Username}"))}");
             }
             else {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     replyToMessageId: update.Message.MessageId,
-                    text: $"Эти бойцы не пингуются на битву"); 
+                    text: $"Эти бойцы не пингуются на лотерею"); 
             }
         }
     }

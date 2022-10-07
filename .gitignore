@@ -341,3 +341,4 @@ healthchecksdb
 
 config.json
 /WebhookApp/Hangfire.db
+/WebhookApp/app.db

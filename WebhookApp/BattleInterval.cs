@@ -9,12 +9,12 @@ namespace WebhookApp
         public DateTimeOffset Start { get; }
         public DateTimeOffset End { get; }
 
-        internal BattleInterval(DateTimeOffset start, DateTimeOffset end) {
+        public BattleInterval(DateTimeOffset start, DateTimeOffset end) {
             Start = start;
             End = end;
         }
 
-        internal static BattleInterval FromDateTimeUtc(DateTime utcDateTime) {
+        public static BattleInterval FromDateTimeUtc(DateTime utcDateTime) {
             if (utcDateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(utcDateTime));
             

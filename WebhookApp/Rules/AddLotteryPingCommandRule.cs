@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using WebhookApp.Services;
+using WebhookApp.Services.Lottery;
 
 namespace WebhookApp.Rules
 {
@@ -15,12 +17,14 @@ namespace WebhookApp.Rules
         private readonly MessageRule _messageRule;
         private readonly ConfigService _configService;
         private readonly ILogger<AddLotteryPingCommandRule> _logger;
+        private readonly ILotteryService _lotteryService;
 
-        public AddLotteryPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<AddLotteryPingCommandRule> logger) {
+        public AddLotteryPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<AddLotteryPingCommandRule> logger, ILotteryService lotteryService) {
             _botService = botService;
             _messageRule = messageRule;
             _configService = configService;
             _logger = logger;
+            _lotteryService = lotteryService;
         }
         public async Task<bool> IsMatch(Update update) {
             BotConfig botConfig = await _configService.LoadAsync();
@@ -32,29 +36,22 @@ namespace WebhookApp.Rules
 
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"Processing /addlotping message..., chatId: {update.Message.Chat.Id.ToString()}");
-            
-            BotConfig botConfig = await _configService.LoadAsync();
-            var usernames = botConfig.LotteryUsernames;
+
             var inputUsernames = update.Message.Text
                 .Split(new[] {'\n', ' '}, StringSplitOptions.RemoveEmptyEntries)
                 .Where(s => s.StartsWith("@"))
                 .Distinct()
+                .Select(u => new Abstractions.User(u.Substring(1)))
                 .ToList();
-            if (!usernames.ContainsKey(update.Message.Chat.Id)) {
-                usernames.Add(update.Message.Chat.Id, inputUsernames);
-            }
-            else {
-                inputUsernames = inputUsernames.Except(usernames[update.Message.Chat.Id]).ToList();
-                usernames[update.Message.Chat.Id].AddRange(inputUsernames);
-            }
-
-            if (inputUsernames.Count > 0) {
-                await _configService.SaveAsync();
+            var addedUsers = new List<Abstractions.User>();
+            foreach (var user in inputUsernames)
+                if (await _lotteryService.AddPingAsync(user, update.Message.Chat.Id))
+                    addedUsers.Add(user);
+            if (addedUsers.Count > 0) {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     replyToMessageId: update.Message.MessageId,
-                    text:
-                    $"Добавлены пинги на лотерею:\n{string.Join('\n', inputUsernames.Select(u => $"🤑{u.Substring(1)}"))}");
+                    text: $"Добавлены пинги на лотерею:\n{string.Join('\n', addedUsers.Select(u => $"👊{u.Username}"))}");
             }
             else {
                 await _botService.Client.SendTextMessageAsync(

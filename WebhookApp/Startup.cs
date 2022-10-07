@@ -6,10 +6,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using WebhookApp.Data;
 using WebhookApp.Jobs;
 using WebhookApp.Rules;
 using WebhookApp.Services;
+using WebhookApp.Services.Battle;
 using WebhookApp.Services.Laboratory;
+using WebhookApp.Services.Lottery;
+using WebhookApp.Services.Ping;
 using WebhookApp.Services.Smoothie;
 
 namespace WebhookApp
@@ -24,9 +29,19 @@ namespace WebhookApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            services.AddOptions<BotOptions>()
+                .BindConfiguration(nameof(BotOptions))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            services.AddSingleton(resolver =>
+                resolver.GetRequiredService<IOptions<BotOptions>>().Value);
+            services.AddDbContext<ApplicationDbContext>();
             services.AddSingleton<ConfigService>();
             services.AddSingleton<BotService>();
             services.AddSingleton<ISmoothieService, SmoothieService>();
+            services.AddScoped<IBattleService, BattleService>();
+            services.AddScoped<ILotteryService, LotteryService>();
+            services.AddScoped<IPingService, PingService>();
             services.Scan(scan => {
                 scan.FromAssemblyOf<IUpdateRule>()
                     .AddClasses(classes => classes.AssignableTo<IUpdateRule>())

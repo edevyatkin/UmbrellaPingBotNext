@@ -13,13 +13,15 @@ namespace WebhookApp.Services
     public class ConfigService
     {
         private readonly ILogger<ConfigService> _logger;
+        private readonly BotOptions _options;
         private JsonSerializer _serializer;
         private const string SchemaFile = "config-schema.json";
         private const string ConfigFile = "config.json";
         private BotConfig _config;
 
-        public ConfigService(ILogger<ConfigService> logger) {
+        public ConfigService(ILogger<ConfigService> logger, BotOptions options) {
             _logger = logger;
+            _options = options;
             _serializer = new JsonSerializer() {
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver() {
@@ -29,11 +31,6 @@ namespace WebhookApp.Services
             };
         }
 
-        public async Task SaveAsync() {
-            await using StreamWriter file = File.CreateText(ConfigFile);
-            _serializer.Serialize(file, _config);
-        }
-        
         public async Task<BotConfig> LoadAsync() {
             if (_config != null)
                 return _config;
@@ -51,6 +48,10 @@ namespace WebhookApp.Services
             }
             
             _config = configObj.ToObject<BotConfig>(_serializer);
+            _config!.Token = _options.Token;
+            _config.Bot = _options.Bot;
+            _config.SwInfoBot = _options.SwInfoBot;
+            _config.WebhookUrl = _options.WebhookUrl;
             _logger.LogInformation("Config loaded");
             
             return _config;

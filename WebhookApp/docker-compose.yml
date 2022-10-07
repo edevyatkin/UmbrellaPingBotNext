@@ -10,4 +10,6 @@ services:
     restart: always
     volumes:
     - ./config.json:/app/config.json
+    - ./appsettings.json:/app/appsettings.json
+    - ./app.db:/app/app.db
   
