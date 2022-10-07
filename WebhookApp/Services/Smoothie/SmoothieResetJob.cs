@@ -10,7 +10,8 @@ class SmoothieResetJob : IJob
         _smoothieService = smoothieService;
     }
     
-    public async Task Do() {
+    public Task Do() {
         _smoothieService.Reset();
+        return Task.CompletedTask;
     }
 }
