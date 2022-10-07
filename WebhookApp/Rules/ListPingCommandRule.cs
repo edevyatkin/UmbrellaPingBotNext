@@ -6,7 +6,6 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using WebhookApp.Services;
 using WebhookApp.Services.Battle;
-using WebhookApp.Services.Ping;
 
 namespace WebhookApp.Rules
 {
@@ -17,7 +16,6 @@ namespace WebhookApp.Rules
         private readonly ConfigService _configService;
         private readonly ILogger<ListPingCommandRule> _logger;
         private readonly IBattleService _battleService;
-        private readonly IPingService _pingService;
 
         public ListPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<ListPingCommandRule> logger, IBattleService battleService) {
             _botService = botService;

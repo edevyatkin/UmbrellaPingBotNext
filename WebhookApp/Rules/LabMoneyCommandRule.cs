@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -15,15 +14,13 @@ namespace WebhookApp.Rules {
         private readonly BotService _botService;
         private readonly ConfigService _config;
         private readonly ILaboratoryService _laboratoryService;
-        private readonly ILogger<LabMoneyCommandRule> _logger;
 
-        public LabMoneyCommandRule(ILogger<LabMoneyCommandRule> logger, MessageRule messageRule, BotService botService,
+        public LabMoneyCommandRule(MessageRule messageRule, BotService botService,
             ConfigService config, ILaboratoryService laboratoryService) {
             _messageRule = messageRule;
             _botService = botService;
             _config = config;
             _laboratoryService = laboratoryService;
-            _logger = logger;
         }
 
         public async Task<bool> IsMatch(Update update) {
