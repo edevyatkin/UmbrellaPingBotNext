@@ -35,7 +35,7 @@ public class SmoothieCommandRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}",
+                $"<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
@@ -49,7 +49,7 @@ public class SmoothieCommandRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
+                $"<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
                 parseMode: ParseMode.Html
             );
         }

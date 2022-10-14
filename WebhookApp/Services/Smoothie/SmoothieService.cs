@@ -26,8 +26,9 @@ namespace WebhookApp.Services.Smoothie;
 public class SmoothieService : ISmoothieService {
     private  List<Smoothie> _allSmoothie;
     public int ElapsedCombinations => _allSmoothie.Count;
-    public Smoothie BestSmoothie { private set; get; } = Smoothie.Empty;
-    public SmoothieStatus BestSmoothieStatus { private set; get; } = SmoothieStatus.Pending;
+    public Smoothie BestSmoothie { get; private set; } = Smoothie.Empty;
+    public SmoothieStatus BestSmoothieStatus { get; private set; } = SmoothieStatus.Pending;
+    public string BestSmoothieDescription { get; private set; } = string.Empty;
 
 
     public SmoothieService() {
@@ -73,12 +74,10 @@ public class SmoothieService : ISmoothieService {
                 throw new Exception("Smoothie hasn't been checked");
         }
 
-        if (ElapsedCombinations == 1) {
-            BestSmoothie = _allSmoothie[0];
-            BestSmoothieStatus = SmoothieStatus.Best;
-        } else if (BestSmoothieStatus > status) {
+        if (BestSmoothieStatus > status) {
             BestSmoothie = candidate;
             BestSmoothieStatus = status;
+            BestSmoothieDescription = BestSmoothie.Description;
         }
     }
 
@@ -92,6 +91,7 @@ public class SmoothieService : ISmoothieService {
         GenerateCombinations(Smoothie.Empty, 0);
         BestSmoothie = Smoothie.Empty;
         BestSmoothieStatus = SmoothieStatus.Pending;
+        BestSmoothieDescription = string.Empty;
     }
 
     private void FilterSmoothie(Smoothie candidate, int min, int max) {

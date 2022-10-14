@@ -41,7 +41,8 @@ public class SmoothieMessageRule : IUpdateRule {
         };
         var text = update.Message.Text.Split('\n'); 
         var smoothie = new Smoothie(
-            text[1].EnumerateRunes().Select(c => ingredientNumbers[c.ToString()]).ToArray()
+            text[1].EnumerateRunes().Select(c => ingredientNumbers[c.ToString()]).ToArray(),
+            text.Length > 6 ? text[6] : string.Empty
         );
         var smoothieStatus = text[3] switch {
             var t when t.Contains("Самый шикарный") => SmoothieStatus.Best,
@@ -55,7 +56,7 @@ public class SmoothieMessageRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}",
+                $"<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
@@ -69,7 +70,7 @@ public class SmoothieMessageRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
+                $"<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
                 parseMode: ParseMode.Html
             );
         }
