@@ -1,4 +1,3 @@
-using Moq;
 using WebhookApp.Services.Laboratory;
 using Xunit;
 
@@ -6,13 +5,8 @@ namespace WebhookApp.Tests;
 
 public class LaboratoryServiceTests
 {
-    private readonly ILaboratoryService _service;
-    
-    public LaboratoryServiceTests()
-    {
-        _service = Mock.Of<LaboratoryService>();
-    }
-    
+    private readonly ILaboratoryService _service = new LaboratoryService();
+
     [Theory]
     [InlineData(65, 15, 16575)]
     [InlineData(67, 25, 36850)]
