@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace WebhookApp.Services.Smoothie;
@@ -84,6 +85,21 @@ public class SmoothieService : ISmoothieService {
     public Smoothie Peek() {
         int index = RandomNumberGenerator.GetInt32(_allSmoothie.Count);
         return _allSmoothie[index];
+    }
+    
+    public List<Smoothie> Peek(int count) {
+        if (count >= _allSmoothie.Count)
+            return _allSmoothie;
+        var selected = new List<Smoothie>();
+        while (count > 0)
+        {
+            int index = RandomNumberGenerator.GetInt32(_allSmoothie.Count);
+            if (selected.Contains(_allSmoothie[index])) 
+                continue;
+            selected.Add(_allSmoothie[index]);
+            count--;
+        }
+        return selected;
     }
 
     public void Reset() {

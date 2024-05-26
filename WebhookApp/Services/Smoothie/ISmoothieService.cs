@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace WebhookApp.Services.Smoothie; 
 
 public interface ISmoothieService {
@@ -7,5 +9,6 @@ public interface ISmoothieService {
     string BestSmoothieDescription { get; }
     void Filter(Smoothie candidate, SmoothieStatus status);
     Smoothie Peek();
+    List<Smoothie> Peek(int count);
     void Reset();
 }

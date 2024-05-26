@@ -56,21 +56,21 @@ public class SmoothieMessageRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}",
+                $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\n/smoothie",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\n<i>Не найден</i>\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
+                $"\ud83c\udf79<b>Поиск лучшего смузи</b>\n<i>Не найден</i>\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",
                 parseMode: ParseMode.Html
             );
         } else {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nЕщё не проверено комбинаций: {_smoothieService.ElapsedCombinations} шт.\nНужно проверить:\n{_smoothieService.Peek()}",
+                $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",
                 parseMode: ParseMode.Html
             );
         }
