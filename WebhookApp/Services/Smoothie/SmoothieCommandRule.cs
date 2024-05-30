@@ -35,7 +35,7 @@ public class SmoothieCommandRule : IUpdateRule {
             await _botService.Client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text:
-                $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\n/smoothie",
+                $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n<code>{_smoothieService.BestSmoothie}</code>\n\n{_smoothieService.BestSmoothieDescription}\n\n/smoothie",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
