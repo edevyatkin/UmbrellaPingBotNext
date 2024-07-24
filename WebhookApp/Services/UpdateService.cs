@@ -11,20 +11,16 @@ namespace WebhookApp.Services
     {
         private readonly IEnumerable<IUpdateRule> _rules;
         private readonly ILogger<UpdateService> _logger;
-        private readonly HashSet<int> _updatesIds;
+        private int _lastUpdateId;
 
         public UpdateService(IEnumerable<IUpdateRule> rules, ILogger<UpdateService> logger) {
             _rules = rules;
             _logger = logger;
-            _updatesIds = new HashSet<int>();
         }
         
         internal async Task ProcessAsync(Update update) {
-            if (_updatesIds.Count == 50)
-                _updatesIds.Clear();
-            if (_updatesIds.Contains(update.Id))
-                return;
-            _updatesIds.Add(update.Id);
+            if (update.Id <= _lastUpdateId) return;
+            _lastUpdateId = update.Id;
             foreach (IUpdateRule rule in _rules) {
                 _logger.LogDebug($"Checking rule: {rule.GetType().Name}");
                 if (await rule.IsMatch(update)) {

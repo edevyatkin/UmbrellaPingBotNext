@@ -57,8 +57,9 @@ namespace WebhookApp
             services.AddHangfireServer(options =>
                 options.SchedulePollingInterval = TimeSpan.FromSeconds(5));
             services
-                .AddControllers()
-                .AddNewtonsoftJson();
+                .AddControllers();
+            services
+                .ConfigureTelegramBotMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

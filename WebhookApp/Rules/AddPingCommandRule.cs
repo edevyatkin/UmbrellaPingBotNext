@@ -50,13 +50,19 @@ namespace WebhookApp.Rules
             if (addedUsers.Count > 0) {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
-                    replyToMessageId: update.Message.MessageId,
+                    replyParameters: new ReplyParameters()
+                    {
+                        MessageId = update.Message.MessageId
+                    },
                     text: $"Добавлены пинги:\n{string.Join('\n', addedUsers.Select(u => $"👊{u.Username}"))}");
             }
             else {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
-                    replyToMessageId: update.Message.MessageId,
+                    replyParameters: new ReplyParameters()
+                    {
+                        MessageId = update.Message.MessageId
+                    },
                     text: $"Эти бойцы уже пингуются на битву"); 
             }
         }

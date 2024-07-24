@@ -16,7 +16,10 @@ namespace WebhookApp
                     recurringJobId: $"{typeof(T).Name}{hour}{minute}",
                     methodCall: j => j.Do(),
                     cronExpression: Cron.Daily(hour, minute),
-                    timeZone: Constants.BotTimeZoneInfo
+                    options: new RecurringJobOptions
+                    {
+                        TimeZone = Constants.BotTimeZoneInfo
+                    }
                 ); 
         }
     }

@@ -1,11 +1,19 @@
 {
   "profiles": {
-    "WebhookApp": {
+    "Dev": {
       "commandName": "Project",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:8888",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Prod": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:8888",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     }
   }
