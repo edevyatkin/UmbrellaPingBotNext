@@ -10,7 +10,7 @@ namespace WebhookApp
         public string Bot { get; set; }
         public string SwInfoBot { get; set; }
         [JsonRequired]
-        [RegularExpression("^-100[0-9]{10}$")]
+        [RegularExpression("^-100[0-9]{9,10}$")]
         public List<long> Chats { get; set; }
         public BotProxy Proxy { get; set; }
         public string WebhookUrl { get; set; }

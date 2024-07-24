@@ -3,7 +3,7 @@
   "properties": {
     "token": {
       "type": "string",
-      "pattern": "^[0-9]{10}:[-_a-zA-Z0-9]{0,35}$"
+      "pattern": "^[0-9]{9,10}:[-_a-zA-Z0-9]{0,35}$"
     },
     "bot": {
       "type": "string"
