@@ -11,7 +11,8 @@ namespace WebhookApp.Services
     {
         private readonly IEnumerable<IUpdateRule> _rules;
         private readonly ILogger<UpdateService> _logger;
-        private int _lastUpdateId;
+        private readonly Queue<int> _updateIds = new ();
+        private readonly object _lockObj = new ();
 
         public UpdateService(IEnumerable<IUpdateRule> rules, ILogger<UpdateService> logger) {
             _rules = rules;
@@ -19,8 +20,14 @@ namespace WebhookApp.Services
         }
         
         internal async Task ProcessAsync(Update update) {
-            if (update.Id <= _lastUpdateId) return;
-            _lastUpdateId = update.Id;
+            lock (_lockObj)
+            {
+                if (_updateIds.Contains(update.Id))
+                    return;
+                if (_updateIds.Count == 100)
+                    _updateIds.TryDequeue(out _);
+                _updateIds.Enqueue(update.Id);
+            }
             foreach (IUpdateRule rule in _rules) {
                 _logger.LogDebug($"Checking rule: {rule.GetType().Name}");
                 if (await rule.IsMatch(update)) {
