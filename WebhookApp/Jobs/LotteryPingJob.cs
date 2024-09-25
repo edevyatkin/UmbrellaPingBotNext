@@ -11,22 +11,21 @@ namespace WebhookApp.Jobs
     class LotteryPingJob : IJob
     {
         private readonly BotService _botService;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<LotteryPingJob> _logger;
         private readonly ILotteryService _lotteryService;
         private readonly IPingService _pingService;
 
-        public LotteryPingJob(BotService botService, ConfigService configService, ILogger<LotteryPingJob> logger, ILotteryService lotteryService, IPingService pingService) {
+        public LotteryPingJob(BotService botService, BotConfig botConfig, ILogger<LotteryPingJob> logger, ILotteryService lotteryService, IPingService pingService) {
             _botService = botService;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
             _lotteryService = lotteryService;
             _pingService = pingService;
         }
         
         public async Task Do() {
-             BotConfig config = await _configService.LoadAsync();
-             foreach (var chatId in config.Chats) {
+             foreach (var chatId in _botConfig.Chats) {
                  var usersToPing = await _lotteryService.GetUsersToPingAsync(chatId);
                  _logger.LogInformation($"Lottery Ping, chatId: {chatId}");
                  await _botService.Client.SendTextMessageAsync(

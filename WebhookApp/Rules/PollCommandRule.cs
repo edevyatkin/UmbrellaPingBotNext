@@ -12,21 +12,20 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<PollCommandRule> _logger;
 
-        public PollCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<PollCommandRule> logger) {
+        public PollCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PollCommandRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update) 
                    && (update.Message.Text.Equals("/poll") 
-                       || update.Message.Text.Equals($"/poll@{config.Bot}"));
+                       || update.Message.Text.Equals($"/poll@{_botConfig.Bot}"));
         }
 
         public async Task ProcessAsync(Update update) {

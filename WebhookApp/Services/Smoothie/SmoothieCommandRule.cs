@@ -11,23 +11,22 @@ namespace WebhookApp.Services.Smoothie;
 
 public class SmoothieCommandRule : IUpdateRule {
     
-    private readonly ConfigService _configService;
+    private readonly BotConfig _botConfig;
     private readonly ISmoothieService _smoothieService;
     private readonly BotService _botService;
 
-    public SmoothieCommandRule(ConfigService configService, ISmoothieService smoothieService, BotService botService) {
-        _configService = configService;
+    public SmoothieCommandRule(BotConfig botConfig, ISmoothieService smoothieService, BotService botService) {
+        _botConfig = botConfig;
         _smoothieService = smoothieService;
         _botService = botService;
     }
 
     public async Task<bool> IsMatch(Update update) {
-        BotConfig config = await _configService.LoadAsync();
         return update.Type == UpdateType.Message
                && update.Message.Type == MessageType.Text
-               && config.Chats.Contains(update.Message.Chat.Id)
+               && _botConfig.Chats.Contains(update.Message.Chat.Id)
                && (update.Message.Text.Equals("/smoothie") 
-                       || update.Message.Text.Equals($"/smoothie@{config.Bot}"));
+                       || update.Message.Text.Equals($"/smoothie@{_botConfig.Bot}"));
     }
 
     public async Task ProcessAsync(Update update) {

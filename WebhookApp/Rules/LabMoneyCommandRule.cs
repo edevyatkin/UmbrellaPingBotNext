@@ -12,14 +12,14 @@ namespace WebhookApp.Rules {
     internal class LabMoneyCommandRule : IUpdateRule {
         private readonly MessageRule _messageRule;
         private readonly BotService _botService;
-        private readonly ConfigService _config;
+        private readonly BotConfig _botConfig;
         private readonly ILaboratoryService _laboratoryService;
 
         public LabMoneyCommandRule(MessageRule messageRule, BotService botService,
-            ConfigService config, ILaboratoryService laboratoryService) {
+            BotConfig botConfig, ILaboratoryService laboratoryService) {
             _messageRule = messageRule;
             _botService = botService;
-            _config = config;
+            _botConfig = botConfig;
             _laboratoryService = laboratoryService;
         }
 
@@ -30,9 +30,7 @@ namespace WebhookApp.Rules {
 
         public async Task ProcessAsync(Update update) {
             var text = update.Message.Text;
-            var config = await _config.LoadAsync();
-
-            if (text == "/labmoney" || text == $"/labmoney@{config.Bot}") {
+            if (text == "/labmoney" || text == $"/labmoney@{_botConfig.Bot}") {
                 await _botService.Client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text:

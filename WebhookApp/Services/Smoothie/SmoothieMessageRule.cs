@@ -11,22 +11,21 @@ namespace WebhookApp.Services.Smoothie;
 
 public class SmoothieMessageRule : IUpdateRule {
     
-    private readonly ConfigService _configService;
+    private readonly BotConfig _botConfig;
     private readonly ISmoothieService _smoothieService;
     private readonly BotService _botService;
 
-    public SmoothieMessageRule(ConfigService configService, ISmoothieService smoothieService, BotService botService) {
-        _configService = configService;
+    public SmoothieMessageRule(BotConfig botConfig, ISmoothieService smoothieService, BotService botService) {
+        _botConfig = botConfig;
         _smoothieService = smoothieService;
         _botService = botService;
     }
 
     public async Task<bool> IsMatch(Update update) {
-        BotConfig config = await _configService.LoadAsync();
         return update.Type == UpdateType.Message
                && update.Message.Type == MessageType.Text
                && update.Message.ForwardFrom?.Username == "StartupWarsBot"
-               && config.Chats.Contains(update.Message.Chat.Id)
+               && _botConfig.Chats.Contains(update.Message.Chat.Id)
                && update.Message.Text.Contains("Ты приготовил 🍹Смузи")
                && update.Message.ForwardDate.Value.Date == DateTime.UtcNow.Date;
     }

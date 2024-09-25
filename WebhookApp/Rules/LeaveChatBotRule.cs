@@ -11,21 +11,20 @@ namespace WebhookApp.Rules
     internal class LeaveChatBotRule : IUpdateRule
     {
         private readonly BotService _botService;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<LeaveChatBotRule> _logger;
 
-        public LeaveChatBotRule(BotService botService, ConfigService configService, ILogger<LeaveChatBotRule> logger) {
+        public LeaveChatBotRule(BotService botService, BotConfig botConfig, ILogger<LeaveChatBotRule> logger) {
             _botService = botService;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return update.Type == UpdateType.Message
                 && update.Message.Type == MessageType.ChatMembersAdded
-                && update.Message.NewChatMembers.Any(u => u.Username == config.Bot)
-                && !config.Chats.Contains(update.Message.Chat.Id);
+                && update.Message.NewChatMembers.Any(u => u.Username == _botConfig.Bot)
+                && !_botConfig.Chats.Contains(update.Message.Chat.Id);
         }
 
         public async Task ProcessAsync(Update update) {

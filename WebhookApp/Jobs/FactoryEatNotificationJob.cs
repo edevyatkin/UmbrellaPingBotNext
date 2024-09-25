@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -9,18 +10,16 @@ namespace WebhookApp.Jobs
     class FactoryEatNotificationJob : IJob
     {
         private readonly BotService _botService;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<FactoryEatNotificationJob> _logger;
 
-        public FactoryEatNotificationJob(BotService botService, ConfigService configService, ILogger<FactoryEatNotificationJob> logger) {
+        public FactoryEatNotificationJob(BotService botService, BotConfig botConfig, ILogger<FactoryEatNotificationJob> logger) {
             _botService = botService;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
         }
         public async Task Do() {
-            BotConfig botConfig = await _configService.LoadAsync();
-            var chats = botConfig.Chats;
-            foreach (var chatId in chats) {
+            foreach (var chatId in _botConfig.Chats) {
                 _logger.LogInformation($"Factory Eat Notification, chatId: {chatId.ToString()}");
 
                 var message = await _botService.Client.SendTextMessageAsync(

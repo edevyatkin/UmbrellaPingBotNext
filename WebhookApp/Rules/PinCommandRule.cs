@@ -12,21 +12,20 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<PinCommandRule> _logger;
 
-        public PinCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<PinCommandRule> logger) {
+        public PinCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PinCommandRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update) 
                    && (update.Message.Text.Equals("/pin") 
-                       || update.Message.Text.Equals($"/pin@{config.Bot}"));
+                       || update.Message.Text.Equals($"/pin@{_botConfig.Bot}"));
         }
 
         public async Task ProcessAsync(Update update) {

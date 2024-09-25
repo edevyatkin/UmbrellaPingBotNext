@@ -7,17 +7,16 @@ namespace WebhookApp.Rules
 {
     internal class MessageRule : IUpdateRule
     {
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
 
-        public MessageRule(ConfigService configService) {
-            _configService = configService;
+        public MessageRule(BotConfig botConfig) {
+            _botConfig = botConfig;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return update.Type == UpdateType.Message
                 && update.Message.Type == MessageType.Text
-                && config.Chats.Contains(update.Message.Chat.Id);
+                && _botConfig.Chats.Contains(update.Message.Chat.Id);
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

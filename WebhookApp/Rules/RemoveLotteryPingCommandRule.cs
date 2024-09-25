@@ -15,23 +15,22 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<RemoveLotteryPingCommandRule> _logger;
         private readonly ILotteryService _lotteryService;
 
-        public RemoveLotteryPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<RemoveLotteryPingCommandRule> logger, ILotteryService lotteryService) {
+        public RemoveLotteryPingCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<RemoveLotteryPingCommandRule> logger, ILotteryService lotteryService) {
             _botService = botService;
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
             _lotteryService = lotteryService;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update)
-                   && config.ChatAdmins.ContainsKey(update.Message.Chat.Id)
-                   && config.ChatAdmins[update.Message.Chat.Id].Contains($"@{update.Message.From.Username}")
+                   && _botConfig.ChatAdmins.ContainsKey(update.Message.Chat.Id)
+                   && _botConfig.ChatAdmins[update.Message.Chat.Id].Contains($"@{update.Message.From.Username}")
                    && Regex.IsMatch(update.Message.Text, @"^\/removelotping[\n\s]+\@\w+([\n\s]+\@\w+)*$");
         }
 

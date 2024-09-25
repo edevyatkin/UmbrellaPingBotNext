@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 
-namespace WebhookApp
-{
-    public class BotConfig
-    {
-        public string Token { get; set; }
-        public string Bot { get; set; }
-        public string SwInfoBot { get; set; }
-        [JsonRequired]
-        [RegularExpression("^-100[0-9]{9,10}$")]
-        public List<long> Chats { get; set; }
-        public string WebhookUrl { get; set; }
-        public Dictionary<long, List<string>> ChatAdmins { get; set; }
-    }
+namespace WebhookApp;
+
+public class BotConfig {
+    [Required, RegularExpression("^[0-9]+:[-_a-zA-Z0-9]{0,35}$")]
+    public string Token { get; set; }
+    [Required, Url]
+    public string WebhookUrl { get; set; }
+    [Required]
+    public string Bot { get; set; }
+    [Required]
+    public string SwInfoBot { get; set; }
+    [Required]
+    public List<long> Chats { get; set; }
+    [Required]
+    public Dictionary<long, List<string>> ChatAdmins { get; set; }
 }

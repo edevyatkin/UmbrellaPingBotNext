@@ -7,17 +7,16 @@ namespace WebhookApp.Rules
     internal class ReplyToBotMessageRule : IUpdateRule
     {
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
 
-        public ReplyToBotMessageRule(MessageRule messageRule, ConfigService configService) {
+        public ReplyToBotMessageRule(MessageRule messageRule, BotConfig botConfig) {
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update)
-                && update.Message.ReplyToMessage?.From.Username == config.Bot;
+                && update.Message.ReplyToMessage?.From.Username == _botConfig.Bot;
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

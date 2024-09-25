@@ -10,21 +10,20 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<PingPongCommandRule> _logger;
 
-        public PingPongCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<PingPongCommandRule> logger) {
+        public PingPongCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PingPongCommandRule> logger) {
             _botService = botService;
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
         }
         
         public async Task<bool> IsMatch(Update update) {
-            BotConfig config = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update)
                    && (update.Message.Text.Equals("/ping") 
-                       || update.Message.Text.Equals($"/ping@{config.Bot}"));
+                       || update.Message.Text.Equals($"/ping@{_botConfig.Bot}"));
         }
 
         public async Task ProcessAsync(Update update) {

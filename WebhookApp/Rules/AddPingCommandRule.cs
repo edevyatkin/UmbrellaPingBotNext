@@ -15,22 +15,21 @@ namespace WebhookApp.Rules
     {
         private readonly BotService _botService;
         private readonly MessageRule _messageRule;
-        private readonly ConfigService _configService;
+        private readonly BotConfig _botConfig;
         private readonly ILogger<AddPingCommandRule> _logger;
         private readonly IBattleService _battleService;
 
-        public AddPingCommandRule(BotService botService, MessageRule messageRule, ConfigService configService, ILogger<AddPingCommandRule> logger, IBattleService battleService) {
+        public AddPingCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<AddPingCommandRule> logger, IBattleService battleService) {
             _botService = botService;
             _messageRule = messageRule;
-            _configService = configService;
+            _botConfig = botConfig;
             _logger = logger;
             _battleService = battleService;
         }
         public async Task<bool> IsMatch(Update update) {
-            BotConfig botConfig = await _configService.LoadAsync();
             return await _messageRule.IsMatch(update)
-                   && botConfig.ChatAdmins.ContainsKey(update.Message.Chat.Id)
-                   && botConfig.ChatAdmins[update.Message.Chat.Id].Contains($"@{update.Message.From.Username}")
+                   && _botConfig.ChatAdmins.ContainsKey(update.Message.Chat.Id)
+                   && _botConfig.ChatAdmins[update.Message.Chat.Id].Contains($"@{update.Message.From.Username}")
                    && Regex.IsMatch(update.Message.Text, @"^\/addping[\n\s]+\@\w+([\n\s]+\@\w+)*$");
         }
 

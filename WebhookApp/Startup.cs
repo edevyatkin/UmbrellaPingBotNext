@@ -29,14 +29,13 @@ namespace WebhookApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddOptions<BotOptions>()
-                .BindConfiguration(nameof(BotOptions))
+            services.AddOptions<BotConfig>()
+                .BindConfiguration(nameof(BotConfig))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
             services.AddSingleton(resolver =>
-                resolver.GetRequiredService<IOptions<BotOptions>>().Value);
+                resolver.GetRequiredService<IOptions<BotConfig>>().Value);
             services.AddDbContext<ApplicationDbContext>();
-            services.AddSingleton<ConfigService>();
             services.AddActivatedSingleton<BotService>();
             services.AddSingleton<ISmoothieService, SmoothieService>();
             services.AddScoped<IBattleService, BattleService>();
