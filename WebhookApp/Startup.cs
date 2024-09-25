@@ -37,7 +37,7 @@ namespace WebhookApp
                 resolver.GetRequiredService<IOptions<BotOptions>>().Value);
             services.AddDbContext<ApplicationDbContext>();
             services.AddSingleton<ConfigService>();
-            services.AddSingleton<BotService>();
+            services.AddActivatedSingleton<BotService>();
             services.AddSingleton<ISmoothieService, SmoothieService>();
             services.AddScoped<IBattleService, BattleService>();
             services.AddScoped<ILotteryService, LotteryService>();
@@ -70,8 +70,6 @@ namespace WebhookApp
 
             app.UseRouting();
             app.UseCors();
-            
-            botService.Run();
 
             JobManager jobManager = new JobManager();
             jobManager.AddDaily<SmoothieResetJob>(3,0);
