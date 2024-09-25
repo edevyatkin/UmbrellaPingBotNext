@@ -73,33 +73,33 @@ namespace WebhookApp
             JobManager jobManager = new JobManager();
             jobManager.AddDaily<SmoothieResetJob>(3,0);
 
-            jobManager.AddBattleNotification(9,30);
-            jobManager.AddBattleNotificationPing(9,31);
-            jobManager.AddBattleNotificationPing(9,55);
-            jobManager.AddFinishBattleOperation(10,00);
+            jobManager.AddDaily<BattleNotificationJob>(9, 30);
+            jobManager.AddDaily<BattleNotificationPingJob>(9, 31);
+            jobManager.AddDaily<BattleNotificationPingJob>(9, 55);
+            jobManager.AddDaily<FinishBattleOperationJob>(10, 00);
             
-            jobManager.AddBattleNotification(12,30);
-            jobManager.AddBattleNotificationPing(12,31);
-            jobManager.AddBattleNotificationPing(12,55);
-            jobManager.AddFinishBattleOperation(13,00);
+            jobManager.AddDaily<BattleNotificationJob>(12, 30);
+            jobManager.AddDaily<BattleNotificationPingJob>(12, 31);
+            jobManager.AddDaily<BattleNotificationPingJob>(12, 55);
+            jobManager.AddDaily<FinishBattleOperationJob>(13, 00);
             
-            jobManager.AddBattleNotification(15,30);
-            jobManager.AddBattleNotificationPing(15,31);
-            jobManager.AddBattleNotificationPing(15,55);
-            jobManager.AddFinishBattleOperation(16,00);
+            jobManager.AddDaily<BattleNotificationJob>(15, 30);
+            jobManager.AddDaily<BattleNotificationPingJob>(15, 31);
+            jobManager.AddDaily<BattleNotificationPingJob>(15, 55);
+            jobManager.AddDaily<FinishBattleOperationJob>(16, 00);
             
-            jobManager.AddBattleNotification(18,30);
-            jobManager.AddBattleNotificationPing(18,31);
+            jobManager.AddDaily<BattleNotificationJob>(18, 30);
+            jobManager.AddDaily<BattleNotificationPingJob>(18, 31);
             jobManager.AddDaily<FactoryEatNotificationJob>(18,32);
-            jobManager.AddBattleNotificationPing(18,55);
-            jobManager.AddFinishBattleOperation(19,00);
+            jobManager.AddDaily<BattleNotificationPingJob>(18, 55);
+            jobManager.AddDaily<FinishBattleOperationJob>(19, 00);
 
             jobManager.AddDaily<LotteryPingJob>(19,17);
             
-            jobManager.AddBattleNotification(21,30);
-            jobManager.AddBattleNotificationPing(21,31);
-            jobManager.AddBattleNotificationPing(21,55);
-            jobManager.AddFinishBattleOperation(22,00);
+            jobManager.AddDaily<BattleNotificationJob>(21, 30);
+            jobManager.AddDaily<BattleNotificationPingJob>(21, 31);
+            jobManager.AddDaily<BattleNotificationPingJob>(21, 55);
+            jobManager.AddDaily<FinishBattleOperationJob>(22, 00);
             jobManager.AddDaily<SleepNotificationJob>(22,05);
             jobManager.AddDaily<SleepNotificationJob>(23,00);
 
