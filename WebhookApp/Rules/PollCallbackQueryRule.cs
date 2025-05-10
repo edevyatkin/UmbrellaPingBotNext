@@ -13,7 +13,7 @@ namespace WebhookApp.Rules
             
             Message message = update.CallbackQuery.Message;
             return Task.FromResult(PollsHelper.HasPoll(message.Chat.Id) &&
-                   PollsHelper.GetPoll(message.Chat.Id).MessageId == message.MessageId);
+                   PollsHelper.GetPoll(message.Chat.Id).MessageId == message.Id);
         }
 
         public Task ProcessAsync(Update update) => Task.CompletedTask;

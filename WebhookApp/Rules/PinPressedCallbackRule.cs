@@ -37,7 +37,7 @@ namespace WebhookApp.Rules
 
             if (userListUpdated) {
                 await PollVoteThrottle.Acquire();
-                await _botService.Client.EditMessageTextAsync(
+                await _botService.Client.EditMessageText(
                     chatId: poll.ChatId,
                     messageId: poll.MessageId,
                     text: pollView.Text,
@@ -45,7 +45,7 @@ namespace WebhookApp.Rules
                     replyMarkup: pollView.ReplyMarkup);
             }
 
-            await _botService.Client.AnswerCallbackQueryAsync(
+            await _botService.Client.AnswerCallbackQuery(
                 callbackQueryId: update.CallbackQuery.Id,
                 text: pollView.ActiveCallbackQueryAnswer);
         }

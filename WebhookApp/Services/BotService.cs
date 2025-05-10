@@ -10,7 +10,7 @@ namespace WebhookApp.Services
         public BotService(BotConfig config, ILogger<BotService> logger) {
             logger.LogInformation("Loading telegram client...");
             Client = new TelegramBotClient(config.Token);
-            Client.SetWebhookAsync(config.WebhookUrl).GetAwaiter().GetResult();
+            Client.SetWebhook(config.WebhookUrl).GetAwaiter().GetResult();
             logger.LogInformation("Telegram client started!");
         }
     }

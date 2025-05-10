@@ -29,7 +29,7 @@ namespace WebhookApp.Rules
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"Processing /ping message..., chatId: {update.Message.Chat.Id.ToString()}");
 
-            await _botService.Client.SendTextMessageAsync(
+            await _botService.Client.SendMessage(
                   chatId: update.Message.Chat.Id,
                   text: "Pong!");
         }

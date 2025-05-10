@@ -17,7 +17,7 @@ public class PingService : IPingService
 
     public async Task<string> PingUserAsync(User user, long chatId)
     {
-        var message = await _botService.Client.SendTextMessageAsync(
+        var message = await _botService.Client.SendMessage(
             chatId: chatId,
             text: user.ToString());
         return message.Text;
@@ -34,7 +34,7 @@ public class PingService : IPingService
 
         foreach (var names in usernamesToPing)
         {
-            await _botService.Client.SendTextMessageAsync(
+            await _botService.Client.SendMessage(
                 chatId: chatId,
                 text: names);
         }

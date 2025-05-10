@@ -22,7 +22,7 @@ namespace WebhookApp.Jobs
             foreach (var chatId in _botConfig.Chats) {
                 _logger.LogInformation($"Factory Eat Notification, chatId: {chatId.ToString()}");
 
-                var message = await _botService.Client.SendTextMessageAsync(
+                var message = await _botService.Client.SendMessage(
                     chatId: chatId,
                     text: "Кушаем после фабрики 🍔",
                     parseMode: ParseMode.Html);

@@ -34,13 +34,13 @@ namespace WebhookApp.Rules
             if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                 var poll = PollsHelper.GetPoll(update.Message.Chat.Id);
                 var text = $"⇧ <a href='https://t.me/c/{poll.ChatId.ToString().Substring(4)}/{poll.MessageId.ToString()}'>К голосованию</a> ⇧";
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: poll.ChatId,
                     text: text,
                     parseMode: ParseMode.Html);
             }
             else {
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: "Голосования ещё нет");
             }

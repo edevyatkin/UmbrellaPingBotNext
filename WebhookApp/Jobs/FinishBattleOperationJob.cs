@@ -21,7 +21,7 @@ namespace WebhookApp.Jobs
             foreach (var poll in polls.Values) {
                 _logger.LogInformation($"Finish Battle Operation, chatId: {poll.ChatId.ToString()}");
                 
-                await _botService.Client.DeleteMessageAsync(
+                await _botService.Client.DeleteMessage(
                     chatId: poll.ChatId,
                     messageId: poll.MessageId);
             }

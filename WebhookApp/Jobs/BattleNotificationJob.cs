@@ -22,18 +22,18 @@ namespace WebhookApp.Jobs
                 _logger.LogInformation($"Battle Notification, chatId: {poll.ChatId.ToString()}");
                 
                 PollView pollView = poll.AsView();
-                await _botService.Client.DeleteMessageAsync(
+                await _botService.Client.DeleteMessage(
                     chatId: poll.ChatId,
                     messageId: poll.MessageId);
 
-                var message = await _botService.Client.SendTextMessageAsync(
+                var message = await _botService.Client.SendMessage(
                     chatId: poll.ChatId,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
                     replyMarkup: pollView.ReplyMarkup);
                 
                 poll.ChatId = message.Chat.Id;
-                poll.MessageId = message.MessageId;
+                poll.MessageId = message.Id;
             }
         }
     }

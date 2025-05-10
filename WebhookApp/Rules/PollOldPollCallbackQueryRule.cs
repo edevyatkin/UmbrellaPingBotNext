@@ -26,13 +26,13 @@ namespace WebhookApp.Rules
             
             Message message = update.CallbackQuery.Message;
             return Task.FromResult(!PollsHelper.HasPoll(message.Chat.Id) ||
-                   PollsHelper.GetPoll(message.Chat.Id).MessageId != message.MessageId);
+                   PollsHelper.GetPoll(message.Chat.Id).MessageId != message.Id);
         }
 
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing old pressing callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
 
-            await _botService.Client.AnswerCallbackQueryAsync(
+            await _botService.Client.AnswerCallbackQuery(
                 callbackQueryId: update.CallbackQuery.Id,
                 text: "Голосование устарело");
         }

@@ -36,20 +36,20 @@ namespace WebhookApp.Rules
 
             var users = await _battleService.GetUsersToPingAsync(update.Message.Chat.Id);
             if (users.Count > 0) {
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
-                        MessageId = update.Message.MessageId
+                        MessageId = update.Message.Id
                     },
                     text: $"Список пингов:\n{string.Join('\n', users.OrderBy(u => u.Username).Select(u => $"👊{u.Username}"))}");
             }
             else {
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
-                        MessageId = update.Message.MessageId
+                        MessageId = update.Message.Id
                     },
                     text: $"На битву никто не пингуется"); 
             }

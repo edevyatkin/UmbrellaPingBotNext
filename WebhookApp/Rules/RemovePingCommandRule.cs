@@ -48,20 +48,20 @@ namespace WebhookApp.Rules
                 if (await _battleService.RemovePingAsync(user, update.Message.Chat.Id))
                     removedUsers.Add(user);
             if (removedUsers.Count > 0) {
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
-                        MessageId = update.Message.MessageId
+                        MessageId = update.Message.Id
                     },
                     text: $"Удалены пинги:\n{string.Join('\n', removedUsers.Select(u => $"🗡{u.Username}"))}");
             }
             else {
-                await _botService.Client.SendTextMessageAsync(
+                await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
-                        MessageId = update.Message.MessageId
+                        MessageId = update.Message.Id
                     },
                     text: $"Эти бойцы не пингуются на битву"); 
             }

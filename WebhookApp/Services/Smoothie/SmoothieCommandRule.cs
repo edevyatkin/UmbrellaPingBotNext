@@ -31,21 +31,21 @@ public class SmoothieCommandRule : IUpdateRule {
 
     public async Task ProcessAsync(Update update) {
         if (_smoothieService.BestSmoothieStatus == SmoothieStatus.Best) {
-            await _botService.Client.SendTextMessageAsync(
+            await _botService.Client.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n<code>{_smoothieService.BestSmoothie}</code>\n\n{_smoothieService.BestSmoothieDescription}\n\n/smoothie",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
-            await _botService.Client.SendTextMessageAsync(
+            await _botService.Client.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\n<i>Не найден</i>\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",
                 parseMode: ParseMode.Html
             );
         } else {
-            await _botService.Client.SendTextMessageAsync(
+            await _botService.Client.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",

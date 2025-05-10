@@ -28,7 +28,7 @@ namespace WebhookApp.Jobs
              foreach (var chatId in _botConfig.Chats) {
                  var usersToPing = await _lotteryService.GetUsersToPingAsync(chatId);
                  _logger.LogInformation($"Lottery Ping, chatId: {chatId}");
-                 await _botService.Client.SendTextMessageAsync(
+                 await _botService.Client.SendMessage(
                      chatId: chatId,
                      text: "`🤑Купить все`",
                      parseMode: ParseMode.MarkdownV2);                

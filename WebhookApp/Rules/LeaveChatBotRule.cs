@@ -22,7 +22,7 @@ namespace WebhookApp.Rules
         
         public async Task<bool> IsMatch(Update update) {
             return update.Type == UpdateType.Message
-                && update.Message.Type == MessageType.ChatMembersAdded
+                && update.Message.Type == MessageType.NewChatMembers
                 && update.Message.NewChatMembers.Any(u => u.Username == _botConfig.Bot)
                 && !_botConfig.Chats.Contains(update.Message.Chat.Id);
         }
@@ -30,7 +30,7 @@ namespace WebhookApp.Rules
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"Processing leave chat bot message..., chatId: {update.Message.Chat.Id.ToString()}");
 
-            await _botService.Client.LeaveChatAsync(
+            await _botService.Client.LeaveChat(
                 chatId: update.Message.Chat.Id);
         }
     }

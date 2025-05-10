@@ -38,7 +38,7 @@ namespace WebhookApp.Rules
                 
                 if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                     poll = PollsHelper.GetPoll(update.Message.Chat.Id);
-                    await _botService.Client.DeleteMessageAsync(
+                    await _botService.Client.DeleteMessage(
                         chatId: poll.ChatId,
                         messageId: poll.MessageId);
                     PollsHelper.UpdatePoll(poll.ChatId, pin);
@@ -49,19 +49,19 @@ namespace WebhookApp.Rules
                 
                 PollView pollView = poll.AsView();
 
-                var message = await _botService.Client.SendTextMessageAsync(
+                var message = await _botService.Client.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
                     replyMarkup: pollView.ReplyMarkup);
                 
                 poll.ChatId = message.Chat.Id;
-                poll.MessageId = message.MessageId;
+                poll.MessageId = message.Id;
             }
 
-            await _botService.Client.DeleteMessageAsync(
+            await _botService.Client.DeleteMessage(
                 chatId: update.Message.Chat.Id,
-                messageId: update.Message.MessageId);
+                messageId: update.Message.Id);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace WebhookApp
         public string LinkToMessage => Utils.LinkToMessage(_chatId, _messageId);
 
         public Pin(Message message) {
-            _messageId = message.MessageId;
+            _messageId = message.Id;
             _chatId = message.Chat.Id;
             (Type, Company) = Parse(message);
             _battleInterval = BattleInterval.FromDateTimeUtc(message.Date.ToUniversalTime());

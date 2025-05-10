@@ -18,7 +18,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.AutoActivation" Version="8.9.1" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
-    <PackageReference Include="Telegram.Bot" Version="21.7.1" />
+    <PackageReference Include="Telegram.Bot" Version="22.5.1" />
+    <PackageReference Include="Telegram.Bot.AspNetCore" Version="22.5.0" />
   </ItemGroup>
 
   <ItemGroup>

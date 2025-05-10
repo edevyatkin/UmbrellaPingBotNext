@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Telegram.Bot.AspNetCore;
 using WebhookApp.Data;
 using WebhookApp.Jobs;
 using WebhookApp.Rules;
