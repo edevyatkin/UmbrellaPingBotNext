@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Telegram.Bot.AspNetCore;
 using WebhookApp.Data;
 using WebhookApp.Jobs;
 using WebhookApp.Rules;
@@ -58,8 +57,6 @@ namespace WebhookApp
                 options.SchedulePollingInterval = TimeSpan.FromSeconds(5));
             services
                 .AddControllers();
-            services
-                .ConfigureTelegramBotMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
