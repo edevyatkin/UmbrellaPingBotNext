@@ -16,4 +16,5 @@ public class BotConfig {
     public List<long> Chats { get; set; }
     [Required]
     public Dictionary<long, List<string>> ChatAdmins { get; set; }
+    public string ProxyHost { get; set; }
 }
