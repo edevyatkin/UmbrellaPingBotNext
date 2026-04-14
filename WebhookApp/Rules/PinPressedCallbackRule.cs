@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 using Poll = WebhookApp.Services.Polls.Poll;
 
@@ -13,12 +12,12 @@ namespace WebhookApp.Rules
 {
     internal class PinPressedCallbackRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly PollCallbackQueryRule _queryRule;
         private readonly ILogger<PinPressedCallbackRule> _logger;
 
-        public PinPressedCallbackRule(BotService botService, PollCallbackQueryRule queryRule, ILogger<PinPressedCallbackRule> logger) {
-            _botService = botService;
+        public PinPressedCallbackRule(ITelegramBotClient botClient, PollCallbackQueryRule queryRule, ILogger<PinPressedCallbackRule> logger) {
+            _botClient = botClient;
             _queryRule = queryRule;
             _logger = logger;
         }
@@ -37,7 +36,7 @@ namespace WebhookApp.Rules
 
             if (userListUpdated) {
                 await PollVoteThrottle.Acquire();
-                await _botService.Client.EditMessageText(
+                await _botClient.EditMessageText(
                     chatId: poll.ChatId,
                     messageId: poll.MessageId,
                     text: pollView.Text,
@@ -45,7 +44,7 @@ namespace WebhookApp.Rules
                     replyMarkup: pollView.ReplyMarkup);
             }
 
-            await _botService.Client.AnswerCallbackQuery(
+            await _botClient.AnswerCallbackQuery(
                 callbackQueryId: update.CallbackQuery.Id,
                 text: pollView.ActiveCallbackQueryAnswer);
         }

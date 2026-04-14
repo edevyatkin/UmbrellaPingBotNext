@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 using Poll = WebhookApp.Services.Polls.Poll;
 
@@ -13,12 +12,12 @@ namespace WebhookApp.Rules
 {
     internal class DotMessageRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly ReplyToInfoBotMessageRule _messageRule;
         private readonly ILogger<DotMessageRule> _logger;
 
-        public DotMessageRule(BotService botService, ReplyToInfoBotMessageRule messageRule, ILogger<DotMessageRule> logger) {
-            _botService = botService;
+        public DotMessageRule(ITelegramBotClient botClient, ReplyToInfoBotMessageRule messageRule, ILogger<DotMessageRule> logger) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _logger = logger;
         }
@@ -38,7 +37,7 @@ namespace WebhookApp.Rules
                 
                 if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                     poll = PollsHelper.GetPoll(update.Message.Chat.Id);
-                    await _botService.Client.DeleteMessage(
+                    await _botClient.DeleteMessage(
                         chatId: poll.ChatId,
                         messageId: poll.MessageId);
                     PollsHelper.UpdatePoll(poll.ChatId, pin);
@@ -49,7 +48,7 @@ namespace WebhookApp.Rules
                 
                 PollView pollView = poll.AsView();
 
-                var message = await _botService.Client.SendMessage(
+                var message = await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: pollView.Text,
                     parseMode: ParseMode.Html,
@@ -59,7 +58,7 @@ namespace WebhookApp.Rules
                 poll.MessageId = message.Id;
             }
 
-            await _botService.Client.DeleteMessage(
+            await _botClient.DeleteMessage(
                 chatId: update.Message.Chat.Id,
                 messageId: update.Message.Id);
         }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -13,12 +11,12 @@ public class SmoothieCommandRule : IUpdateRule {
     
     private readonly BotConfig _botConfig;
     private readonly ISmoothieService _smoothieService;
-    private readonly BotService _botService;
+    private readonly ITelegramBotClient _botClient;
 
-    public SmoothieCommandRule(BotConfig botConfig, ISmoothieService smoothieService, BotService botService) {
+    public SmoothieCommandRule(BotConfig botConfig, ISmoothieService smoothieService, ITelegramBotClient botClient) {
         _botConfig = botConfig;
         _smoothieService = smoothieService;
-        _botService = botService;
+        _botClient = botClient;
     }
 
     public async Task<bool> IsMatch(Update update) {
@@ -31,21 +29,21 @@ public class SmoothieCommandRule : IUpdateRule {
 
     public async Task ProcessAsync(Update update) {
         if (_smoothieService.BestSmoothieStatus == SmoothieStatus.Best) {
-            await _botService.Client.SendMessage(
+            await _botClient.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден cамый лучший смузи!\n<code>{_smoothieService.BestSmoothie}</code>\n\n{_smoothieService.BestSmoothieDescription}\n\n/smoothie",
                 parseMode: ParseMode.Html
             );
         } else if (_smoothieService.BestSmoothieStatus >= SmoothieStatus.Poor) {
-            await _botService.Client.SendMessage(
+            await _botClient.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\n<i>Не найден</i>\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",
                 parseMode: ParseMode.Html
             );
         } else {
-            await _botService.Client.SendMessage(
+            await _botClient.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text:
                 $"\ud83c\udf79<b>Поиск лучшего смузи</b>\nНайден:\n{_smoothieService.BestSmoothie}\n\n{_smoothieService.BestSmoothieDescription}\n\nНе проверено комбинаций: <b>{_smoothieService.ElapsedCombinations}</b> шт.\nПопробуйте эти:\n{string.Join('\n',_smoothieService.Peek(3).Select(c => $"<code>{c}</code>"))}\n\nПодобрать другие — /smoothie",

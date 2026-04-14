@@ -3,20 +3,19 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 
 namespace WebhookApp.Rules
 {
     internal class PollCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<PollCommandRule> _logger;
 
-        public PollCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PollCommandRule> logger) {
-            _botService = botService;
+        public PollCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<PollCommandRule> logger) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -34,13 +33,13 @@ namespace WebhookApp.Rules
             if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                 var poll = PollsHelper.GetPoll(update.Message.Chat.Id);
                 var text = $"⇧ <a href='https://t.me/c/{poll.ChatId.ToString().Substring(4)}/{poll.MessageId.ToString()}'>К голосованию</a> ⇧";
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: poll.ChatId,
                     text: text,
                     parseMode: ParseMode.Html);
             }
             else {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: "Голосования ещё нет");
             }

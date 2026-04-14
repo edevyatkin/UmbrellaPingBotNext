@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using WebhookApp.Services;
 
@@ -11,17 +14,22 @@ namespace WebhookApp.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly UpdateService _service;
 
-        public WebhookController(ILogger<WebhookController> logger, UpdateService service) {
+        public WebhookController(ILogger<WebhookController> logger) {
             _logger = logger;
-            _service = service;
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] Update update) {
+        public async Task<IActionResult> PostAsync([FromBody] Update update, [FromServices] ITelegramBotClient botClient, [FromServices] UpdateHandler handler, CancellationToken token) {
             _logger.LogDebug("Update processing...");
-            await _service.ProcessAsync(update);
+            try
+            {
+                await handler.HandleUpdateAsync(botClient, update, token);
+            }
+            catch (Exception exception)
+            {
+                await handler.HandleErrorAsync(botClient, exception, Telegram.Bot.Polling.HandleErrorSource.HandleUpdateError, token);
+            }
             return Ok();
         }
     }

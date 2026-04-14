@@ -5,18 +5,17 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 
 namespace WebhookApp.Rules
 {
     internal class PollOldPollCallbackQueryRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botCl;
         private readonly ILogger<PollOldPollCallbackQueryRule> _logger;
 
-        public PollOldPollCallbackQueryRule(BotService botService, ILogger<PollOldPollCallbackQueryRule> logger) {
-            _botService = botService;
+        public PollOldPollCallbackQueryRule(ITelegramBotClient botClient, ILogger<PollOldPollCallbackQueryRule> logger) {
+            _botCl = botClient;
             _logger = logger;
         }
         
@@ -32,7 +31,7 @@ namespace WebhookApp.Rules
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"[ {DateTime.Now.ToLocalTime().ToString(CultureInfo.InvariantCulture)} ] Processing old pressing callback... {update.CallbackQuery.From.Username}, chatId: {update.CallbackQuery.Message.Chat.Id.ToString()}");
 
-            await _botService.Client.AnswerCallbackQuery(
+            await _botCl.AnswerCallbackQuery(
                 callbackQueryId: update.CallbackQuery.Id,
                 text: "Голосование устарело");
         }

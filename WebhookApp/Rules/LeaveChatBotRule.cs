@@ -4,18 +4,17 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 
 namespace WebhookApp.Rules
 {
     internal class LeaveChatBotRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly BotConfig _botConfig;
         private readonly ILogger<LeaveChatBotRule> _logger;
 
-        public LeaveChatBotRule(BotService botService, BotConfig botConfig, ILogger<LeaveChatBotRule> logger) {
-            _botService = botService;
+        public LeaveChatBotRule(ITelegramBotClient botClient, BotConfig botConfig, ILogger<LeaveChatBotRule> logger) {
+            _botClient = botClient;
             _botConfig = botConfig;
             _logger = logger;
         }
@@ -30,7 +29,7 @@ namespace WebhookApp.Rules
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"Processing leave chat bot message..., chatId: {update.Message.Chat.Id.ToString()}");
 
-            await _botService.Client.LeaveChat(
+            await _botClient.LeaveChat(
                 chatId: update.Message.Chat.Id);
         }
     }

@@ -6,7 +6,7 @@ namespace WebhookApp;
 public class BotConfig {
     [Required, RegularExpression("^[0-9]+:[-_a-zA-Z0-9]{0,35}$")]
     public string Token { get; set; }
-    [Required, Url]
+    [Url]
     public string WebhookUrl { get; set; }
     [Required]
     public string Bot { get; set; }

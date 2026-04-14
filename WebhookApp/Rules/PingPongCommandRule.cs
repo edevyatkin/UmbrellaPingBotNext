@@ -2,19 +2,18 @@
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using WebhookApp.Services;
 
 namespace WebhookApp.Rules
 {
     internal class PingPongCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<PingPongCommandRule> _logger;
+        private readonly ITelegramBotClient _botClient;
 
-        public PingPongCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PingPongCommandRule> logger) {
-            _botService = botService;
+        public PingPongCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<PingPongCommandRule> logger) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -28,10 +27,10 @@ namespace WebhookApp.Rules
 
         public async Task ProcessAsync(Update update) {
             _logger.LogInformation($"Processing /ping message..., chatId: {update.Message.Chat.Id.ToString()}");
-
-            await _botService.Client.SendMessage(
-                  chatId: update.Message.Chat.Id,
-                  text: "Pong!");
+            
+            await _botClient.SendMessage(
+                chatId: update.Message.Chat.Id,
+                text: "Pong!");
         }
     }
 }

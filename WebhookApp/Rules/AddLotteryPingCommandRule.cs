@@ -6,21 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using WebhookApp.Services;
 using WebhookApp.Services.Lottery;
 
 namespace WebhookApp.Rules
 {
     internal class AddLotteryPingCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<AddLotteryPingCommandRule> _logger;
         private readonly ILotteryService _lotteryService;
 
-        public AddLotteryPingCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<AddLotteryPingCommandRule> logger, ILotteryService lotteryService) {
-            _botService = botService;
+        public AddLotteryPingCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<AddLotteryPingCommandRule> logger, ILotteryService lotteryService) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -47,7 +46,7 @@ namespace WebhookApp.Rules
                 if (await _lotteryService.AddPingAsync(user, update.Message.Chat.Id))
                     addedUsers.Add(user);
             if (addedUsers.Count > 0) {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
@@ -56,7 +55,7 @@ namespace WebhookApp.Rules
                     text: $"Добавлены пинги на лотерею:\n{string.Join('\n', addedUsers.Select(u => $"👊{u.Username}"))}");
             }
             else {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {

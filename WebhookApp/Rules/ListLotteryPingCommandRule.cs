@@ -4,21 +4,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using WebhookApp.Services;
 using WebhookApp.Services.Lottery;
 
 namespace WebhookApp.Rules
 {
     internal class ListLotteryPingCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<ListLotteryPingCommandRule> _logger;
         private readonly ILotteryService _lotteryService;
 
-        public ListLotteryPingCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<ListLotteryPingCommandRule> logger, ILotteryService lotteryService) {
-            _botService = botService;
+        public ListLotteryPingCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<ListLotteryPingCommandRule> logger, ILotteryService lotteryService) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -36,7 +35,7 @@ namespace WebhookApp.Rules
 
             var users = await _lotteryService.GetUsersToPingAsync(update.Message.Chat.Id);
             if (users.Count > 0) {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
@@ -45,7 +44,7 @@ namespace WebhookApp.Rules
                     text: $"Список пингов на лотерею:\n{string.Join('\n', users.OrderBy(u => u.Username).Select(u => $"👊{u.Username}"))}");
             }
             else {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {

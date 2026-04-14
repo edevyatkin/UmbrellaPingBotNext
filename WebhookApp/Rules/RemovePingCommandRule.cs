@@ -6,21 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using WebhookApp.Services;
 using WebhookApp.Services.Battle;
 
 namespace WebhookApp.Rules
 {
     internal class RemovePingCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<RemovePingCommandRule> _logger;
         private readonly IBattleService _battleService;
 
-        public RemovePingCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<RemovePingCommandRule> logger, IBattleService battleService) {
-            _botService = botService;
+        public RemovePingCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<RemovePingCommandRule> logger, IBattleService battleService) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -48,7 +47,7 @@ namespace WebhookApp.Rules
                 if (await _battleService.RemovePingAsync(user, update.Message.Chat.Id))
                     removedUsers.Add(user);
             if (removedUsers.Count > 0) {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {
@@ -57,7 +56,7 @@ namespace WebhookApp.Rules
                     text: $"Удалены пинги:\n{string.Join('\n', removedUsers.Select(u => $"🗡{u.Username}"))}");
             }
             else {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     replyParameters: new ReplyParameters()
                     {

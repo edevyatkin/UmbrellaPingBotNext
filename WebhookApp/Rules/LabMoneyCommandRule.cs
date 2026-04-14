@@ -5,20 +5,19 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Laboratory;
 
 namespace WebhookApp.Rules {
     internal class LabMoneyCommandRule : IUpdateRule {
         private readonly MessageRule _messageRule;
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly BotConfig _botConfig;
         private readonly ILaboratoryService _laboratoryService;
 
-        public LabMoneyCommandRule(MessageRule messageRule, BotService botService,
+        public LabMoneyCommandRule(MessageRule messageRule, ITelegramBotClient botClient,
             BotConfig botConfig, ILaboratoryService laboratoryService) {
             _messageRule = messageRule;
-            _botService = botService;
+            _botClient = botClient;
             _botConfig = botConfig;
             _laboratoryService = laboratoryService;
         }
@@ -31,7 +30,7 @@ namespace WebhookApp.Rules {
         public async Task ProcessAsync(Update update) {
             var text = update.Message.Text;
             if (text == "/labmoney" || text == $"/labmoney@{_botConfig.Bot}") {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text:
                     "<b>Расчет затрат лаборатории</b>\nФормат команды:\n/labmoney <i>ваш_уровень</i> <i>кол-во_нанимаемых_1 кол-во_нанимаемых_2 ...</i>\nУровень от 1 до 99; количество от 1 до 99, до 6 чисел через пробел",
@@ -48,7 +47,7 @@ namespace WebhookApp.Rules {
 
             var level = nums[0];
             if (level is < 1 or > 99) {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: "Уровень должен быть от 1 до 99"
                 );
@@ -57,14 +56,14 @@ namespace WebhookApp.Rules {
 
             var workers = nums[1..];
             if (workers.All(n => n is < 1 or > 99) || workers.Length > 6) {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: "Каждое количество нанимаемых должно быть от 1 до 99, не более 6"
                 );
                 return;
             }
 
-            await _botService.Client.SendMessage(
+            await _botClient.SendMessage(
                 chatId: update.Message.Chat.Id,
                 text: $"<b>Расчет затрат лаборатории</b>\n" +
                       $"Уровень: {level}\nКоличество нанимаемых: {string.Join("+", workers)}\n" +

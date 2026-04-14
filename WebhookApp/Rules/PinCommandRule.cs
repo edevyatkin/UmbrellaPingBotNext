@@ -3,20 +3,19 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 
 namespace WebhookApp.Rules
 {
     internal class PinCommandRule : IUpdateRule
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly MessageRule _messageRule;
         private readonly BotConfig _botConfig;
         private readonly ILogger<PinCommandRule> _logger;
 
-        public PinCommandRule(BotService botService, MessageRule messageRule, BotConfig botConfig, ILogger<PinCommandRule> logger) {
-            _botService = botService;
+        public PinCommandRule(ITelegramBotClient botClient, MessageRule messageRule, BotConfig botConfig, ILogger<PinCommandRule> logger) {
+            _botClient = botClient;
             _messageRule = messageRule;
             _botConfig = botConfig;
             _logger = logger;
@@ -34,13 +33,13 @@ namespace WebhookApp.Rules
             if (PollsHelper.HasPoll(update.Message.Chat.Id)) {
                 var poll = PollsHelper.GetPoll(update.Message.Chat.Id);
                 var pressPinText = $"{poll.Pin.Type}{poll.Pin.Company.Logo} Прожимаемся в 📌<a href='{poll.Pin.LinkToMessage}'>пин</a>";
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: poll.ChatId,
                     text: pressPinText,
                     parseMode: ParseMode.Html);
             }
             else {
-                await _botService.Client.SendMessage(
+                await _botClient.SendMessage(
                     chatId: update.Message.Chat.Id,
                     text: "Пина на битву ещё нет");
             }

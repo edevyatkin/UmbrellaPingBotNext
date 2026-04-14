@@ -8,16 +8,16 @@ namespace WebhookApp.Services.Ping;
 
 public class PingService : IPingService
 {
-    private readonly BotService _botService;
+    private readonly ITelegramBotClient _botClient;
 
-    public PingService(BotService botService)
+    public PingService(ITelegramBotClient botClient)
     {
-        _botService = botService;
+        _botClient = botClient;
     }
 
     public async Task<string> PingUserAsync(User user, long chatId)
     {
-        var message = await _botService.Client.SendMessage(
+        var message = await _botClient.SendMessage(
             chatId: chatId,
             text: user.ToString());
         return message.Text;
@@ -34,7 +34,7 @@ public class PingService : IPingService
 
         foreach (var names in usernamesToPing)
         {
-            await _botService.Client.SendMessage(
+            await _botClient.SendMessage(
                 chatId: chatId,
                 text: names);
         }

@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
-using WebhookApp.Services;
 using WebhookApp.Services.Polls;
 
 namespace WebhookApp.Jobs
 {
     class FinishBattleOperationJob : IJob
     {
-        private readonly BotService _botService;
+        private readonly ITelegramBotClient _botClient;
         private readonly ILogger<FinishBattleOperationJob> _logger;
 
-        public FinishBattleOperationJob(BotService botService, ILogger<FinishBattleOperationJob> logger) {
-            _botService = botService;
+        public FinishBattleOperationJob(ITelegramBotClient botClient, ILogger<FinishBattleOperationJob> logger) {
+            _botClient = botClient;
             _logger = logger;
         }
         
@@ -21,7 +20,7 @@ namespace WebhookApp.Jobs
             foreach (var poll in polls.Values) {
                 _logger.LogInformation($"Finish Battle Operation, chatId: {poll.ChatId.ToString()}");
                 
-                await _botService.Client.DeleteMessage(
+                await _botClient.DeleteMessage(
                     chatId: poll.ChatId,
                     messageId: poll.MessageId);
             }
