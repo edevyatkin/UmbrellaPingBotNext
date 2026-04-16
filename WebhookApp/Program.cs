@@ -60,7 +60,8 @@ builder.Services.AddHttpClient("tgbot")
 
         return new SocketsHttpHandler();
     })
-    .AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(botConfig.Token, client));
+    .AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(botConfig.Token, client))
+    .AddStandardResilienceHandler();
 
 if (string.IsNullOrEmpty(botConfig.WebhookUrl))
 {
