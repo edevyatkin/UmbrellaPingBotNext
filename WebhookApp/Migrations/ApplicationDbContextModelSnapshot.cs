@@ -15,7 +15,7 @@ namespace WebhookApp.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
 
             modelBuilder.Entity("WebhookApp.Services.Battle.BattleNotificationPing", b =>
                 {
@@ -32,6 +32,23 @@ namespace WebhookApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BattleNotificationPings");
+                });
+
+            modelBuilder.Entity("WebhookApp.Services.Factory.FactoryPing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ChatId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FactoryPings");
                 });
 
             modelBuilder.Entity("WebhookApp.Services.Lottery.LotteryPing", b =>

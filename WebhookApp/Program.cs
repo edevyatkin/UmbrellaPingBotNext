@@ -13,6 +13,7 @@ using WebhookApp.Data;
 using WebhookApp.Rules;
 using WebhookApp.Services;
 using WebhookApp.Services.Battle;
+using WebhookApp.Services.Factory;
 using WebhookApp.Services.Job;
 using WebhookApp.Services.Laboratory;
 using WebhookApp.Services.LongPolling;
@@ -33,6 +34,7 @@ builder.Services.AddSingleton<ISmoothieService, SmoothieService>();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<IBattleService, BattleService>();
 builder.Services.AddScoped<ILotteryService, LotteryService>();
+builder.Services.AddScoped<IFactoryService, FactoryService>();
 builder.Services.AddScoped<IPingService, PingService>();
 builder.Services.Scan(scan => {
     scan.FromAssemblyOf<IUpdateRule>()

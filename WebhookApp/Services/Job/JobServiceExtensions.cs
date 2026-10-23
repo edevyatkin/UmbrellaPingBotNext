@@ -24,6 +24,8 @@ public static class JobServiceExtensions
         jobService.AddDaily<BattleNotificationPingJob>(15, 55);
         jobService.AddDaily<FinishBattleOperationJob>(16, 00);
             
+        jobService.AddDaily<FactoryPingJob>(18,00);
+        
         jobService.AddDaily<BattleNotificationJob>(18, 30);
         jobService.AddDaily<BattleNotificationPingJob>(18, 31);
         jobService.AddDaily<FactoryEatNotificationJob>(18,32);
