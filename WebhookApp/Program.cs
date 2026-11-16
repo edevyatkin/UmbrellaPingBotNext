@@ -4,6 +4,7 @@ using System.Net.Http;
 using Hangfire;
 using Hangfire.LiteDB;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -84,6 +85,11 @@ builder.Services.AddHangfireServer(options =>
 builder.Services.AddSingleton<JobService>();
 
 var app = builder.Build();
+
+using var migrateScope = app.Services.CreateScope();
+var db = migrateScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+db.Database.Migrate();
+
 var botClient = app.Services.GetRequiredService<ITelegramBotClient>();
 
 if (!string.IsNullOrEmpty(botConfig.WebhookUrl))
